@@ -7,6 +7,8 @@ from scipy.spatial import distance
 from collections import defaultdict
 
 
+from Raport import Raport
+
 class ClusteringReduction(InstanceReduction):
 
     def __init__(self, data: DataPreparation, r):
@@ -274,7 +276,7 @@ class ClusteringReduction(InstanceReduction):
 
         np_red_data, np_red_col = self.prepare_reduced_set(reduced_set)
         return np_red_data, np_red_col
-        
+
     def reduce_instances(self):
         print('Dzieje sie magia')
         # create clusters
@@ -299,3 +301,6 @@ print(len(data.data_label))
 reduction = ClusteringReduction(data,10)
 reduction.reduce_instances()
 print(reduction.red_lab)
+
+raport = Raport(data, reduction.red_data, reduction.reduce_instances)
+raport.print_raport()
