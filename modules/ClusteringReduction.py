@@ -300,6 +300,8 @@ print(len(data.data_label))
 
 enn = ENN(data, 3)
 enn.reduce_instances()
+rap = Raport(data, enn.red_data, enn.reduce_instances)
+rap.print_raport()
 
 reduction = ClusteringReduction(data,10)
 reduction.reduce_instances()
