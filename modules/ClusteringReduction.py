@@ -6,7 +6,7 @@ from sklearn.cluster import KMeans
 from scipy.spatial import distance
 from collections import defaultdict
 
-
+from ENN import ENN
 from Raport import Raport
 
 class ClusteringReduction(InstanceReduction):
@@ -297,6 +297,9 @@ data.prepare_dataset()
 print(data.features)
 print(data.class_dict)
 print(len(data.data_label))
+
+enn = ENN(data, 3)
+enn.reduce_instances()
 
 reduction = ClusteringReduction(data,10)
 reduction.reduce_instances()
