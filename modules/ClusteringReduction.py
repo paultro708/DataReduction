@@ -290,7 +290,7 @@ class ClusteringReduction(InstanceReduction):
         
 
 
-data = DataPreparation("letter")
+data = DataPreparation("iris")
 data.load_dataset()
 data.prepare_dataset()
 
@@ -298,14 +298,15 @@ print(data.features)
 print(data.class_dict)
 print(len(data.data_label))
 
-enn = ENN(data, 3)
+enn = ENN(data, 5)
 enn.reduce_instances()
-rap = Raport(data, enn.red_data, enn.reduce_instances)
+rap = Raport(data, enn.red_data, enn.red_lab)
 rap.print_raport()
 
 reduction = ClusteringReduction(data,10)
 reduction.reduce_instances()
 print(reduction.red_lab)
 
-raport = Raport(data, reduction.red_data, reduction.reduce_instances)
+raport = Raport(data, reduction.red_data, reduction.red_lab)
 raport.print_raport()
+
