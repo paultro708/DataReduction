@@ -9,6 +9,8 @@ from collections import defaultdict
 from ENN import ENN
 from Raport import Raport
 
+from matplotlib import pyplot as plt
+
 class ClusteringReduction(InstanceReduction):
 
     def __init__(self, data: DataPreparation, r):
@@ -152,8 +154,7 @@ class ClusteringReduction(InstanceReduction):
             # checking label of instance
             class_label_of_instance = self.data.data_label_train[instance_id]
             # add to array for class label
-            classes_with_indexes[self.data.class_dict[class_label_of_instance]].append(
-                instance_id)
+            classes_with_indexes[self.data.class_dict[class_label_of_instance]].append(instance_id)
 
         return classes_with_indexes
 
@@ -219,7 +220,7 @@ class ClusteringReduction(InstanceReduction):
             reduced_set.append([])
 
         # for each cluster
-        for i in range(self.data.n_classes):
+        for i in range(self.n_clusters):
             # for each instance in cluster
             for instance_id in clusters_with_id[i]:
                 class_label_of_instance = self.data.data_label_train[instance_id]
@@ -286,27 +287,63 @@ class ClusteringReduction(InstanceReduction):
         np_red_data, np_red_col = self.clustering_reduction(clusters_with_id, self.data.data_all_train)
         # return np_red_data, np_red_col
         self.red_data = np_red_data
-        self.red_lab = np_red_data
+        self.red_lab = np_red_col
         
 
 
-data = DataPreparation("iris")
-data.load_dataset()
-data.prepare_dataset()
+data1 = DataPreparation('iris')
+data1.load_dataset()
+data1.prepare_dataset()
 
-print(data.features)
-print(data.class_dict)
-print(len(data.data_label))
+print(data1.features)
+print(data1.class_dict)
+print(len(data1.data_label))
 
-enn = ENN(data, 5)
+enn = ENN(data1, 5)
 enn.reduce_instances()
-rap = Raport(data, enn.red_data, enn.red_lab)
+rap = Raport(data1, enn.red_data, enn.red_lab)
 rap.print_raport()
 
-reduction = ClusteringReduction(data,10)
-reduction.reduce_instances()
-print(reduction.red_lab)
 
-raport = Raport(data, reduction.red_data, reduction.red_lab)
-raport.print_raport()
+orig = []
+for i in data1.data_label_train: #range(len(data.data_all_train)):
+    orig.append(data1.class_dict[i])
+orig = np.array(orig)
+red = []
+for i in enn.red_lab: #range(len(data.data_all_train)):
+    red.append(data1.class_dict[i])
+red = np.array(red)
+
+plt.scatter(data1.data_all_train[:,0], data1.data_all_train[:,1], c = orig) #,c=data.data_label_train)
+plt.show()
+plt.scatter(enn.red_data[:,0], enn.red_data[:,1], c=red)#,c=reduction.red_lab)
+plt.show()
+
+
+# data = DataPreparation("iris")
+# data.load_dataset()
+# data.prepare_dataset()
+
+# reduction = ClusteringReduction(data,20)
+# reduction.reduce_instances()
+# print(reduction.red_lab)
+# print(reduction.red_data)
+
+
+# orig = []
+# for i in data.data_label_train: #range(len(data.data_all_train)):
+#     orig.append(data.class_dict[i])
+# orig = np.array(orig)
+# red = []
+# for i in reduction.red_lab: #range(len(data.data_all_train)):
+#     red.append(data.class_dict[i])
+# red = np.array(red)
+
+# plt.scatter(data.data_all_train[:,0], data.data_all_train[:,1], c = orig) #,c=data.data_label_train)
+# plt.show()
+# plt.scatter(reduction.red_data[:,0], reduction.red_data[:,1], c=red)#,c=reduction.red_lab)
+# plt.show()
+
+# raport = Raport(data, reduction.red_data, reduction.red_lab)
+# raport.print_raport()
 
