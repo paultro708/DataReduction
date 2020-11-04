@@ -120,26 +120,36 @@ class DROP1(InstanceReduction):
         TODO k+1 dla without i k dla with
         """
         n_instances = len(self.data.data_label_train)
+        rem = 0
 
-        knn = KNeighborsClassifier(n_neighbors= self.k + 1).fit(self.data.data_all_train, self.data.data_label_train)
-        graph = knn.kneighbors_graph().toarray()
+        knn_k = KNeighborsClassifier(n_neighbors= self.k).fit(self.data.data_all_train, self.data.data_label_train)
+        graph_k = knn_k.kneighbors_graph().toarray()
 
-        NN = np.empty((n_instances), dtype=object)
-        AN = np.empty((n_instances), dtype=object)
+        knn_k1 = KNeighborsClassifier(n_neighbors= self.k + 1).fit(self.data.data_all_train, self.data.data_label_train)
+        graph_k1 = knn_k1.kneighbors_graph().toarray()
+
+        NN_k = np.empty((n_instances), dtype=object)
+        AN_k = np.empty((n_instances), dtype=object)
 
         for i in range(n_instances):
-            NN[i] = np.where(graph[i] == 1)[0] #indexes of neighbours
-            AN[i] = np.where(graph[:,i] == 1)[0] #indexes of associates
+            NN_k[i] = np.where(graph_k[i] == 1)[0] #indexes of neighbours
+            AN_k[i] = np.where(graph_k[:,i] == 1)[0] #indexes of associates
         
-        for i in range(n_instances):
-            n_with = self.n_classified_correct_with(AN[i], knn) #tu powinno być ANNk
-            n_without = self.n_classified_correct_without(i, AN[i], graph) #tu ANk1
+        for i, d in np.ndenumerate(self.red_data): #enumerate(self.red_data[:]):
+            n_with = self.n_classified_correct_with(AN_k[i[0]], knn_k) #tu powinno być ANNk
+            n_without = self.n_classified_correct_without(i[0], AN_k[i[0]], graph_k1) #tu ANk1
 
             if (n_without >= n_with):
-                print('rem')
+                rem = rem +1
                 """
                 remove instances TODO how
                 """
+
+                self.red_data = np.delete(self.red_data, [i[0]], axis=0)
+                self.red_lab = np.delete(self.red_lab, [i[0]], axis = 0)
+                AN_k[i[0]] = np.array([]) #delete fromassociates
+
+        print(rem)
 
 
         

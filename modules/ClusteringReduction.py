@@ -321,7 +321,7 @@ class ClusteringReduction(InstanceReduction):
 # plt.show()
 
 
-data = DataPreparation("iris")
+data = DataPreparation("satimage")
 data.load_dataset()
 data.prepare_dataset()
 
