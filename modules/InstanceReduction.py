@@ -18,12 +18,11 @@ class InstanceReduction(metaclass = ABCMeta):
     Abstract class respresenting instance reduction method.
     """   
 
-    def __init__(self, name, data: DataPreparation):
+    def __init__(self, data: DataPreparation):
         """
-        Initialize data for reduction and name of method
+        Initialize data for reduction
         """
         self.data = data
-        self.name = name
 
     @abstractmethod
     def reduce_instances(self):

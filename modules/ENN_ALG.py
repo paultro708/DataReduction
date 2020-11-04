@@ -2,9 +2,10 @@ from DataPreparation import DataPreparation
 from InstanceReduction import InstanceReduction
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
+from sklearn.neighbors import KNeighborsClassifier
 from collections import Counter
 
-class ENN(InstanceReduction):
+class ENN_ALG(InstanceReduction):
     """
     Class representing ENN algorithm. It reduces especially noise instances.
     """
@@ -15,11 +16,11 @@ class ENN(InstanceReduction):
         self.red_data = self.data.data_all_train
         self.red_lab = self.data.data_label_train
 
-    def find_majority_class_knn(self, point):
+    def find_majority_class_knn(self, point, neigh):
         """
         Function for k nearest neighbors check the majority class and returns it
         """
-        neigh = NearestNeighbors(n_neighbors = self.k).fit(self.red_data)
+        # neigh = NearestNeighbors(n_neighbors = self.k).fit(self.red_data)
         indexes = neigh.kneighbors([point], return_distance = False)
         classes = []
         for idx in indexes:
@@ -27,22 +28,6 @@ class ENN(InstanceReduction):
         #check labels of indexes and choose majority
         return Counter(classes[0]).most_common(1)[0][0]
     
-    def prepare_reduced_set(self):
-        """
-        Function prepare reduced dataset grouped by label for using in classificators
-        """
-
-        reduced_labels = []
-        tmp = []
-        for i in range(self.data.n_classes):
-            for id in reduced_set[i]:
-                reduced_labels.append(list(self.data.class_dict)[i])
-                tmp.append(id.tolist())
-
-        np_red_data = np.array(tmp)
-        np_red_label = np.array(reduced_labels)
-
-        return np_red_data, np_red_label
 
     def reduce_instances(self):
         print('Dzieje sie magia ENN')
@@ -53,12 +38,23 @@ class ENN(InstanceReduction):
 
         #create array with idexes of data to remove
         remove_id=[]
+
+        #prepare model
+        neigh = NearestNeighbors(n_neighbors = self.k).fit(self.red_data)
         
         for idx in range(n_instances):
             instance_class = self.red_lab[idx]
-            if (instance_class != self.find_majority_class_knn(self.red_data[idx])):
+            # if (instance_class != self.find_majority_class_knn(self.red_data[idx], neigh)):
+            if instance_class != self.find_majority_class_knn(self.red_data[idx], neigh):
                 flag_data[idx] = 1
                 remove_id.append(idx)
+                # ne = NearestNeighbors(n_neighbors= 15).fit(self.red_data)
+                # na = KNeighborsClassifier(n_neighbors= 15).fit(self.red_data, self.red_lab)
+                # ide = ne.kneighbors([self.red_data[idx]], return_distance = False)
+                # ida = na.kneighbors([self.red_data[idx]], return_distance = False)
+                # print("ide:")
+                # print(ide)
+                # print(ida)
 
         #remove flaged instances
         self.red_data = np.delete(self.red_data, remove_id, axis = 0)

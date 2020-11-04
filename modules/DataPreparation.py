@@ -5,6 +5,7 @@ import pandas as pd
 # from sklearn.datasets import fetch_rcv1
 from sklearn import datasets
 from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import normalize
 
 def create_path_csv(folder, name):
         """
@@ -33,6 +34,7 @@ dataset_path = {"iris": create_path_csv(datasets_folder, 'iris'),
 class DataPreparation:
     """
     Class using for loading possible datasets and preparing for reducing algorithms and raports
+
 
     Atributes:
     :dataset_name: name of dataset
@@ -100,13 +102,15 @@ class DataPreparation:
 
     def prepare_dataset(self):
         """
-        Function prepaing dataset for reduction
+        Function preparing dataset for reduction
         """
         #if self.class_col: #column name
         #create data frame with class labels
         self.data_label = self.dataset[self.class_col]
         #drop column with label 
         self.data_all = self.dataset.drop(columns=self.class_col)
+        #normalize data
+        self.data_all = normalize(self.data_all)
 
         #map labels to 0-n indexes
         self.class_dict = dict()
@@ -115,8 +119,8 @@ class DataPreparation:
             self.class_dict[label] = i
             i+=1
 
-        #init array of features
-        self.features = self.data_all.columns
+        # #init array of features
+        # self.features = self.data_all.columns
 
         #convert to numpy array
         self.data_all = np.array(self.data_all)
@@ -127,6 +131,29 @@ class DataPreparation:
         
         #init number of classes
         self.n_classes = len(set(self.data_label))
+
+
+    @property
+    def training(self):
+        return self.data_all_train, self.data_label_train
+
+    @training.setter
+    def training(self, data, label):
+        """
+        Setter updating training data after reduction. Using for re-reduction
+        :data: training dataset
+        :label: labels of training dataset
+        """
+        self.data_all_train = data
+        self.data_label_train = label
+
+
+    @classmethod
+    def from_reduced_dataset(cls):
+        """
+        TODO
+        """
+        pass
 
 
 data = DataPreparation("liver")
