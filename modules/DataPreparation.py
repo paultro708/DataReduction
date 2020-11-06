@@ -39,66 +39,49 @@ class DataPreparation:
     Atributes:
     :dataset_name: name of dataset
     """
-    #name of dataset
-    dataset_name = 'iris'
-    #original loaded dataset as pandas data frame
-    dataset=1
+    # #name of dataset
+    # dataset_name = 'iris'
+    # #original loaded dataset as pandas data frame
+    # dataset=1
     
-    #all original data without labels
-    data_all=1
-    #labels for original data
-    data_label=1
+    # #all original data without labels
+    # data_all=1
+    # #labels for original data
+    # data_label=1
 
-    #training data obtained from original dataset
-    data_all_train=1
-    #testing data obtained from original dataset
-    data_all_test=1
-    #labels of training data obtained from original dataset
-    data_label_train=1
-    #labels of training data obtained from original dataset
-    data_label_test = 1
+    # #training data obtained from original dataset
+    # data_all_train=1
+    # #testing data obtained from original dataset
+    # data_all_test=1
+    # #labels of training data obtained from original dataset
+    # data_label_train=1
+    # #labels of training data obtained from original dataset
+    # data_label_test = 1
 
-    #number of classes in dataset
-    n_classes=1
+    # #number of classes in dataset
+    # n_classes=1
 
-    #array of fetures
-    features=[]
+    # #array of fetures
+    # features=[]
 
-    #name of column with class labels
-    class_col = 'class'
+    # #name of column with class labels
+    # class_col = 'class'
 
-    #dictionary of labels of classes and their numerical equivalent index
-    class_dict = dict()
-    
-
-    def __init__(self, name):
-        """
-        Initialize dataset
-
-        :name: name of dataset - one of: 
-                "iris", 
-                "glass", 
-                "letter", 
-                "liver", 
-                "pendigits", 
-                "spambase", 
-                "segment",
-                "satimage" or
-                "yeast"
-        """
-        self.dataset_name = name
-
-    
-    def load_dataset(self, class_col = 'class'):
+    # #dictionary of labels of classes and their numerical equivalent index
+    # class_dict = dict()
+    def load_dataset(self):
         """
         Function loading dataset to pandas dataframe
         """
-        self.class_col = class_col
+        
 
         # if path == 'default':
         #     self.dataset = pd.read_csv(path)
         # else:
-        self.dataset = pd.read_csv(dataset_path[self.dataset_name])
+        if self.dataset_name not in dataset_path:
+            raise Exception("Please select right dataset name!")
+        else:
+            self.dataset = pd.read_csv(dataset_path[self.dataset_name])
 
     def prepare_dataset(self):
         """
@@ -106,7 +89,12 @@ class DataPreparation:
         """
         #if self.class_col: #column name
         #create data frame with class labels
-        self.data_label = self.dataset[self.class_col]
+
+        try: 
+            self.data_label = self.dataset[self.class_col]
+        except KeyError:
+            raise Exception("Please select the existing column name as column with labels!")
+            return
         #drop column with label 
         self.data_all = self.dataset.drop(columns=self.class_col)
         #normalize data
@@ -132,6 +120,38 @@ class DataPreparation:
         #init number of classes
         self.n_classes = len(set(self.data_label))
 
+        
+
+    def __init__(self, name = "iris", class_col = 'class'):
+        """
+        Initialize dataset
+
+        :name: name of dataset - one of: 
+                "iris", 
+                "glass", 
+                "letter", 
+                "liver", 
+                "pendigits", 
+                "spambase", 
+                "segment",
+                "satimage" or
+                "yeast"
+        """
+        self.dataset_name = name
+        self.class_col = class_col
+        self.load_dataset()
+        self.prepare_dataset()
+        # try:
+        #     self.load_dataset()
+        #     self.prepare_dataset()
+        # except Exception as e:
+        #     print(e)
+
+    
+    
+
+    
+
 
 
     @property
@@ -153,7 +173,9 @@ class DataPreparation:
     def from_reduced_dataset(cls):
         """
         TODO
+        Aletrnative constructor 
         """
+        
         pass
 
 

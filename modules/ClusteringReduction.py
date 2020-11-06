@@ -7,8 +7,8 @@ from scipy.spatial import distance
 from collections import defaultdict
 
 from ENN_ALG import ENN_ALG
-from DROP1 import DROP1
 from Raport import Raport
+from DROP1 import DROP1
 
 from matplotlib import pyplot as plt
 
@@ -138,7 +138,7 @@ class ClusteringReduction(InstanceReduction):
                 sum += actual_data[feature]
             try:
                 mean_point = np.append(mean_point, sum/count_of_values)
-            except ZeroDivisionException:
+            except ZeroDivisionError:
                 print('Can not division by 0!')
 
         return mean_point
@@ -328,20 +328,18 @@ class ClusteringReduction(InstanceReduction):
 # plt.show()
 
 
-data = DataPreparation("iris")
-data.load_dataset()
-data.prepare_dataset()
+data = DataPreparation('segment')#("iris")
+#data.load_dataset()
+#data.prepare_dataset()
 print(len(data.data_all_train))
 print(data.n_classes)
-reduction = ClusteringReduction(data,20)#(data,20)
+reduction = ENN_ALG(data)#(data,20)
+
 start = time.clock()
 print("Time of reduction: {} !".format(reduction.reduce_instances(return_time=True)))
 end = time.clock()
 print("Time:")
 print(end - start)
-print(reduction.red_lab)
-print(reduction.red_data)
-
 
 orig = []
 for i in data.data_label_train: #range(len(data.data_all_train)):

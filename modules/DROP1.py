@@ -46,7 +46,7 @@ class DROP1(InstanceReduction):
         # # else:
         # # return data_ins, label_ins
 
-    def n_classified_correct_with(self, AN, knn):
+    def __n_classified_correct_with(self, AN, knn):
         """
         Function counting correctly classified instances
         """
@@ -71,7 +71,7 @@ class DROP1(InstanceReduction):
         return n
 
 
-    def n_classified_correct_without(self, index, AN, graph):
+    def __n_classified_correct_without(self, index, AN, graph):
         """
         Function counting correctly classified instances without 
         """
@@ -110,7 +110,6 @@ class DROP1(InstanceReduction):
         start = process_time()
 
         n_instances = len(self.data.data_label_train)
-        rem = 0
 
         knn_k = KNeighborsClassifier(n_neighbors= self.k).fit(self.data.data_all_train, self.data.data_label_train)
         graph_k = knn_k.kneighbors_graph().toarray()
@@ -126,11 +125,10 @@ class DROP1(InstanceReduction):
             AN_k[i] = np.where(graph_k[:,i] == 1)[0] #indexes of associates
         
         for i, d in np.ndenumerate(self.red_data): #enumerate(self.red_data[:]):
-            n_with = self.n_classified_correct_with(AN_k[i[0]], knn_k) #tu powinno być ANNk
-            n_without = self.n_classified_correct_without(i[0], AN_k[i[0]], graph_k1) #tu ANk1
+            n_with = self.__n_classified_correct_with(AN_k[i[0]], knn_k) #tu powinno być ANNk
+            n_without = self.__n_classified_correct_without(i[0], AN_k[i[0]], graph_k1) #tu ANk1
 
             if (n_without >= n_with):
-                rem = rem +1
                 """
                 remove instances TODO how
                 """
@@ -139,7 +137,6 @@ class DROP1(InstanceReduction):
                 self.red_lab = np.delete(self.red_lab, [i[0]], axis = 0)
                 AN_k[i[0]] = np.delete(AN_k[i[0]], [i[0]], axis=0)# np.array([]) #delete from associates
 
-        #print(rem)
 
         #end time measurement
         end = process_time()
