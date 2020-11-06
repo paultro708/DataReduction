@@ -1,6 +1,6 @@
 from DataPreparation import DataPreparation
 from abc import ABCMeta, abstractmethod, ABC
-
+from time import process_time
 # #dictionary of names of reduction methods
 # dataset_path = {"iris": create_path_csv(datasets_folder, 'iris'),
 #                 "glass": create_path_csv(datasets_folder, 'glass'),
@@ -25,7 +25,7 @@ class InstanceReduction(metaclass = ABCMeta):
         self.data = data
 
     @abstractmethod
-    def reduce_instances(self):
+    def reduce_instances(self, return_time = False):
         """
         Abstract method - main in class. Runs reduction algorithm.
         """

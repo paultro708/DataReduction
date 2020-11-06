@@ -12,6 +12,9 @@ from Raport import Raport
 
 from matplotlib import pyplot as plt
 
+import time
+from time import process_time
+
 class ClusteringReduction(InstanceReduction):
 
     def __init__(self, data: DataPreparation, r):
@@ -279,8 +282,9 @@ class ClusteringReduction(InstanceReduction):
         np_red_data, np_red_col = self.prepare_reduced_set(reduced_set)
         return np_red_data, np_red_col
 
-    def reduce_instances(self):
+    def reduce_instances(self, return_time = False):
         print('Dzieje sie magia')
+        start = process_time()
         # create clusters
         clusters = self.create_clusters(data = self.data.data_all_train, number_of_clusters = self.n_clusters)
         #group clusters 
@@ -289,6 +293,9 @@ class ClusteringReduction(InstanceReduction):
         # return np_red_data, np_red_col
         self.red_data = np_red_data
         self.red_lab = np_red_col
+        end = process_time()
+        if return_time:
+            return end - start
         
 
 
@@ -321,12 +328,17 @@ class ClusteringReduction(InstanceReduction):
 # plt.show()
 
 
-data = DataPreparation("satimage")
+data = DataPreparation("iris")
 data.load_dataset()
 data.prepare_dataset()
-
-reduction = DROP1(data)#(data,20)
-reduction.reduce_instances()
+print(len(data.data_all_train))
+print(data.n_classes)
+reduction = ClusteringReduction(data,20)#(data,20)
+start = time.clock()
+print("Time of reduction: {} !".format(reduction.reduce_instances(return_time=True)))
+end = time.clock()
+print("Time:")
+print(end - start)
 print(reduction.red_lab)
 print(reduction.red_data)
 

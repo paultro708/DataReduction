@@ -2,6 +2,7 @@ from DataPreparation import DataPreparation
 from InstanceReduction import InstanceReduction
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
+from time import process_time
 
 class DROP1(InstanceReduction):
     """
@@ -32,6 +33,19 @@ class DROP1(InstanceReduction):
         # else:
         return data_ins, label_ins
 
+        # #data of instances
+        # data_ins = np.empty((1,len(tab)))
+        # #labels of instances
+        # label_ins = np.empty((1,len(tab)))
+        # for i in tab:
+        #     data_ins[i] = dataset[i]
+        #     label_ins[i] = labelset[i]
+        
+        # # if data_ins == []:
+        # #     return [data_ins], [label_ins]
+        # # else:
+        # # return data_ins, label_ins
+
     def n_classified_correct_with(self, AN, knn):
         """
         Function counting correctly classified instances
@@ -39,11 +53,7 @@ class DROP1(InstanceReduction):
         #data of instances in ANN 
         #excepted labels of instances
         data_for_pred, label_expct = self.find_data_and_labels(AN, self.data.data_all_train, self.data.data_label_train) 
-        # for i in ANN:
-
-        #     data_for_pred.append(self.data.data_all_train[i])
-        #     label_expct.append(self.data.data_label_train[i])
-        
+       
         pred = []
         if len(data_for_pred) == 0:
             pred = np.array([])
@@ -52,7 +62,6 @@ class DROP1(InstanceReduction):
                 pred.append(knn.predict([i])) 
 
         #pred = knn.predict(data_for_pred)
-
         #count correctly classified instances in ANN
         n = 0
         for i in range(len(pred)):
@@ -66,14 +75,6 @@ class DROP1(InstanceReduction):
         """
         Function counting correctly classified instances without 
         """
-        #for each AN find in graph ids of neighbours and for them get data and label to fit new knn model without i
-
-        # NN = np.empty((n_instances), dtype=object)
-        # AN = np.empty((n_instances), dtype=object)
-
-        # for i in range(n_instances):
-        #     NN[i] = np.where(graph[i] == 1)[0] #indexes of neighbours
-        #     AN[i] = np.where(graph[:,i] == 1)[0] #indexes of associates
 
         NN_of_A = []
 
@@ -82,13 +83,6 @@ class DROP1(InstanceReduction):
             NN_of_A.append(np.delete(neigh, np.argwhere(neigh == index)))  #indexes of neighbours without actual
         pred = []
 
-        # for i in NN_of_A:
-        #     data_for_pred, label_expct = self.find_data_and_labels(i, self.data.data_all_train, self.data.data_label_train)
-        #     if len(data_for_pred) == 0:
-        #         pred.append = np.array([])
-        #     else:
-        #         knn = KNeighborsClassifier(n_neighbors=self.k).fit(data_for_pred, label_expct)
-        #         pred.append(knn.predict([i]))
         n = 0
         for idx, nn in enumerate(NN_of_A):
 
@@ -104,21 +98,17 @@ class DROP1(InstanceReduction):
                 if(label_of_id == knn.predict(data_of_id)):
                     n = n+1
             
-            # if pred[idx] ==
-        
-        
-        # for i in range(len(pred)):
-        #     if pred[i] == label_expct[i]:
-        #         n = n+1
-        
         return n
         
 
-    def reduce_instances(self):
+    def reduce_instances(self, return_time = False):
         print('Dzieje sie magia DROP1')
         """
         TODO k+1 dla without i k dla with
         """
+        #start time measurement
+        start = process_time()
+
         n_instances = len(self.data.data_label_train)
         rem = 0
 
@@ -147,9 +137,16 @@ class DROP1(InstanceReduction):
 
                 self.red_data = np.delete(self.red_data, [i[0]], axis=0)
                 self.red_lab = np.delete(self.red_lab, [i[0]], axis = 0)
-                AN_k[i[0]] = np.array([]) #delete fromassociates
+                AN_k[i[0]] = np.delete(AN_k[i[0]], [i[0]], axis=0)# np.array([]) #delete from associates
 
-        print(rem)
+        #print(rem)
+
+        #end time measurement
+        end = process_time()
+
+        if return_time:
+            return end - start
+
 
 
         

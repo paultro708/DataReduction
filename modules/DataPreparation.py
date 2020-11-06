@@ -120,7 +120,7 @@ class DataPreparation:
             i+=1
 
         # #init array of features
-        # self.features = self.data_all.columns
+        self.n_features = self.data_all.shape[1]
 
         #convert to numpy array
         self.data_all = np.array(self.data_all)
@@ -131,6 +131,7 @@ class DataPreparation:
         
         #init number of classes
         self.n_classes = len(set(self.data_label))
+
 
 
     @property
@@ -156,10 +157,10 @@ class DataPreparation:
         pass
 
 
-data = DataPreparation("liver")
-data.load_dataset()
-data.prepare_dataset()
+# data = DataPreparation("liver")
+# data.load_dataset()
+# data.prepare_dataset()
 
-print(data.features)
-print(data.class_dict)
-print(len(data.data_label))
+# print(data.features)
+# print(data.class_dict)
+# print(len(data.data_label))

@@ -4,6 +4,7 @@ import numpy as np
 from sklearn.neighbors import NearestNeighbors
 from sklearn.neighbors import KNeighborsClassifier
 from collections import Counter
+from time import process_time
 
 class ENN_ALG(InstanceReduction):
     """
@@ -29,8 +30,9 @@ class ENN_ALG(InstanceReduction):
         return Counter(classes[0]).most_common(1)[0][0]
     
 
-    def reduce_instances(self):
+    def reduce_instances(self, return_time = False):
         print('Dzieje sie magia ENN')
+        start = process_time()
         n_instances = len(self.data.data_label_train)
 
         #create array with zeros, ones will be represent instances to remove
@@ -70,7 +72,10 @@ class ENN_ALG(InstanceReduction):
                 
                 #TODO test
 
-               
+        end = process_time()
+
+        if return_time:
+            return end - start
 
         # # return np_red_data, np_red_col
         # self.red_data = np_red_data
