@@ -10,6 +10,8 @@ from ENN_ALG import ENN_ALG
 from Raport import Raport
 from DROP1 import DROP1
 
+from MSS import MSS
+
 from matplotlib import pyplot as plt
 
 import time
@@ -328,12 +330,12 @@ class ClusteringReduction(InstanceReduction):
 # plt.show()
 
 
-data = DataPreparation('segment')#("iris")
+data = DataPreparation('pendigits')#("iris")
 #data.load_dataset()
 #data.prepare_dataset()
 print(len(data.data_all_train))
 print(data.n_classes)
-reduction = ENN_ALG(data)#(data,20)
+reduction = MSS(data)#(data,20)
 
 start = time.clock()
 print("Time of reduction: {} !".format(reduction.reduce_instances(return_time=True)))
@@ -352,7 +354,7 @@ red = np.array(red)
 
 plt.scatter(data.data_all_train[:,0], data.data_all_train[:,1], c = orig) #,c=data.data_label_train)
 plt.savefig(".\\plots\\original.png")
-plt.scatter(reduction.red_data[:,0], reduction.red_data[:,1], c=red)#,c=reduction.red_lab)
+plt.scatter(reduction.red_data[:, 0], reduction.red_data[:, 1], c=red)#,c=reduction.red_lab)
 plt.savefig(".\\plots\\reduced.png")
 
 raport = Raport(data, reduction.red_data, reduction.red_lab)
