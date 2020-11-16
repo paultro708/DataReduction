@@ -33,6 +33,22 @@ class Raport():
         self.reduced_label = reduced_label
         self.c_type = c_type
 
+    def draw_plots(self, col1, col2):
+        #prepare labels
+        orig = []
+        for i in self.original.data_label_train: #range(len(data.data_all_train)):
+            orig.append(self.original.class_dict[i])
+        orig = np.array(orig)
+        red = []
+        for i in self.reduced_data: #range(len(data.data_all_train)):
+            red.append(self.original.class_dict[i])
+        red = np.array(red)
+
+        plt.scatter(data.data_all_train[:,0], data.data_all_train[:,1], c = orig) #,c=data.data_label_train)
+        plt.savefig(".\\plots\\original.png")
+        # plt.scatter(reduction.red_data[:, 0], reduction.red_data[:, 1], c=red)#,c=reduction.red_lab)
+        # plt.savefig(".\\plots\\reduced.png")
+
     def raport_classify(self, original_set, original_labels, reduced_set, reduced_labels, test_set, test_labels, c_type = 'all'):
         """
         TODO special classifier

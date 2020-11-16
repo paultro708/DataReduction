@@ -97,6 +97,7 @@ class DataPreparation:
             return
         #drop column with label 
         self.data_all = self.dataset.drop(columns=self.class_col)
+        self.features = self.data_all.columns.values.tolist()
         #normalize data
         self.data_all = normalize(self.data_all)
 

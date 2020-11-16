@@ -6,6 +6,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from collections import Counter
 from time import process_time
 from scipy.spatial import distance
+import datetime
 
 class MSS(InstanceReduction):
     """
@@ -97,5 +98,4 @@ class MSS(InstanceReduction):
         end = process_time()
 
         if return_time:
-            return end - start
-
+            return str(datetime.timedelta(seconds=(end - start))) 

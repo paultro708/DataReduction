@@ -9,7 +9,7 @@ from collections import defaultdict
 from ENN_ALG import ENN_ALG
 from Raport import Raport
 from DROP1 import DROP1
-
+from DROP1_2 import DROP1_2
 from MSS import MSS
 
 from matplotlib import pyplot as plt
@@ -330,12 +330,12 @@ class ClusteringReduction(InstanceReduction):
 # plt.show()
 
 
-data = DataPreparation('pendigits')#("iris")
+data = DataPreparation('iris')#("iris")
 #data.load_dataset()
 #data.prepare_dataset()
 print(len(data.data_all_train))
 print(data.n_classes)
-reduction = MSS(data)#(data,20)
+reduction = DROP1_2(data)#(data,20)
 
 start = time.clock()
 print("Time of reduction: {} !".format(reduction.reduce_instances(return_time=True)))
