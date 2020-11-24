@@ -1,23 +1,17 @@
-from DataPreparation import DataPreparation
-from InstanceReduction import InstanceReduction
+from .. import DataPreparation
+from ._Reduction import _Reduction
 import numpy as np
 import pandas as pd
 from sklearn.cluster import KMeans
 from scipy.spatial import distance
 from collections import defaultdict
 
-from ENN_ALG import ENN_ALG
-from Raport import Raport
-from DROP1 import DROP1
-from DROP1_2 import DROP1_2
-from MSS import MSS
-
 from matplotlib import pyplot as plt
 
 import time
 from time import process_time
 
-class ClusteringReduction(InstanceReduction):
+class PCS(_Reduction):
 
     def __init__(self, data: DataPreparation, r):
         self.data = data
@@ -335,7 +329,7 @@ data = DataPreparation('pendigits')#("iris")
 #data.prepare_dataset()
 print(len(data.data_all_train))
 print(data.n_classes)
-reduction = DROP1_2(data)#(data,20)
+reduction = ENN(data)#(data,20)
 
 start = time.clock()
 print("Time of reduction: {} !".format(reduction.reduce_instances(return_time=True)))
