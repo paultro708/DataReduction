@@ -18,7 +18,7 @@ from .. import DataPreparation
 #                 "yeast": create_path_csv(datasets_folder, 'yeast')
 #                 }
 
-class __Reduction(metaclass = ABCMeta):
+class _Reduction(metaclass = ABCMeta):
     """
     Abstract class respresenting instance reduction method.
     """   

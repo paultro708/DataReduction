@@ -1,13 +1,13 @@
 import numpy as np
-# import matplotlib.pyplot as plt
 import pandas as pd
-# from sklearn.cluster import KMeans
-# from sklearn.datasets import fetch_rcv1
-from sklearn import datasets
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import normalize
 import os
-import pathlib
+from pandas.api.types import is_numeric_dtype
+
+class NotLoadedException(Exception):
+    def __init__(self, message):
+        self.message = message
 
 def create_path_csv(folder, name):
         """
@@ -41,64 +41,25 @@ class DataPreparation:
     Atributes:
     :dataset_name: name of dataset
     """
-    # #name of dataset
-    # dataset_name = 'iris'
-    # #original loaded dataset as pandas data frame
-    # dataset=1
     
-    # #all original data without labels
-    # data_all=1
-    # #labels for original data
-    # data_label=1
-
-    # #training data obtained from original dataset
-    # data_all_train=1
-    # #testing data obtained from original dataset
-    # data_all_test=1
-    # #labels of training data obtained from original dataset
-    # data_label_train=1
-    # #labels of training data obtained from original dataset
-    # data_label_test = 1
-
-    # #number of classes in dataset
-    # n_classes=1
-
-    # #array of fetures
-    # features=[]
-
-    # #name of column with class labels
-    # class_col = 'class'
-
-    # #dictionary of labels of classes and their numerical equivalent index
-    # class_dict = dict()
-    def load_dataset(self):
-        """
-        Function loading dataset to pandas dataframe
-        """
+    # def load_dataset(self):
+    #     """
+    #     Function loading dataset to pandas dataframe
+    #     """
         
 
-        # if path == 'default':
-        #     self.dataset = pd.read_csv(path)
-        # else:
-        if self.dataset_name not in dataset_path:
-            raise Exception("Please select right dataset name!")
-        else:
-            self.dataset = pd.read_csv(dataset_path[self.dataset_name])
+    #     # if path == 'default':
+    #     #     self.dataset = pd.read_csv(path)
+    #     # else:
+    #     if self.dataset_name not in dataset_path:
+    #         raise Exception("Please select right dataset name!")
+    #     else:
+    #         self.dataset = pd.read_csv(dataset_path[self.dataset_name])
 
     def prepare_dataset(self):
         """
         Function preparing dataset for reduction
         """
-        #if self.class_col: #column name
-        #create data frame with class labels
-
-        try: 
-            self.data_label = self.dataset[self.class_col]
-        except KeyError:
-            raise Exception("Please select the existing column name as column with labels!")
-        #drop column with label 
-        self.data_all = self.dataset.drop(columns=self.class_col)
-        self.features = self.data_all.columns.values.tolist()
         #normalize data
         self.data_all = normalize(self.data_all)
 
@@ -122,9 +83,38 @@ class DataPreparation:
         #init number of classes
         self.n_classes = len(set(self.data_label))
 
-        
 
-    def __init__(self, name = "iris", class_col = 'class'):
+    def load_csv(self):
+    
+        #check loaded
+        try:
+            self.dataset == None
+        except NameError:
+            raise NotLoadedException('Dataset must be loaded before preparation')
+
+        #constains more than one column
+        if len(self.dataset.columns) < 2:
+            raise Exception('Dataset must have minimum 2 columns! Please check if you select apriopriate filepath or separator.')
+
+        #contains missing values
+        if self.dataset.isnull().values.any() == True:
+            raise Exception('Dataset contains Nan values. Please fill missing values before use class.')
+
+        #constains class column
+        if self.class_col in self.dataset.columns:
+            self.data_label = self.dataset[self.class_col]
+            self.data_all = self.dataset.drop(columns=self.class_col)
+            self.features = self.data_all.columns.values.tolist()
+        else:
+            raise Exception('Please select existing column name as class column.')
+
+        #constains only numeric values
+        for col in self.data_all.columns:
+            if not is_numeric_dtype(self.data_all[col]):
+                raise Exception('Dataset constains non numeric values.')
+    
+
+    def __init__(self, name = None, filepath = None, class_col = 'class', sep = ','):
         """
         Initialize dataset
 
@@ -139,55 +129,36 @@ class DataPreparation:
                 "satimage" or
                 "yeast"
         """
-        self.dataset_name = name
-        self.class_col = class_col
-        self.load_dataset()
-        self.prepare_dataset()
-        # try:
-        #     self.load_dataset()
-        #     self.prepare_dataset()
-        # except Exception as e:
-        #     print(e)
-
-    
-    
-
-    
-
-
-
-    @property
-    def training(self):
-        return self.data_all_train, self.data_label_train
-
-    @training.setter
-    def training(self, data, label):
-        """
-        Setter updating training data after reduction. Using for re-reduction
-        :data: training dataset
-        :label: labels of training dataset
-        """
-        self.data_all_train = data
-        self.data_label_train = label
-
-
-    @classmethod
-    def from_reduced_dataset(cls):
-        """
-        TODO
-        Aletrnative constructor 
-        """
+        if (name is None) and (filepath is None):
+            raise Exception('Can not load data without name of dataset or filepath of dataset file!')
         
-        pass
+        self.class_col = class_col
+
+        #if selected file
+        if filepath:
+            try: 
+                self.dataset = pd.read_csv(filepath, sep = sep)
+                self.load_csv()
+                self.prepare_dataset()
+            except FileNotFoundError:
+                raise Exception("File {} not found. Please select the existing csv file!".format(filepath))
+            except OSError:
+                raise Exception('Can not use file in path {}. Please select the apriopriate filepath!'.format(filepath))
+            except ValueError:
+                raise Exception('Can not use file in path {}. Please select filepath with apriopriate extension!'.format(filepath))
+            except:
+                raise Exception('Please select csv filepath with apriopriate extension.')
+        
+        #if selected availiable dataset by name
+        elif name:
+            if name not in dataset_path:
+                raise Exception('Dataset {} not found. Please select apriopriate dataset name!'.format(name))
+            else:
+                self.dataset = pd.read_csv(dataset_path[name])
+                self.load_csv()
+                self.prepare_dataset()
 
 
-# data = DataPreparation("liver")
-# data.load_dataset()
-# data.prepare_dataset()
-
-# print(data.features)
-# print(data.class_dict)
-# print(len(data.data_label))
 
 if __name__ == "__main__":
     #Test DataPreparation

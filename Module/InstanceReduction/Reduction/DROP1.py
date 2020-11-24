@@ -5,7 +5,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from time import process_time
 from ._NNGraph import _NNGraph
 
-class DROP1_2(_Reduction):
+class DROP1(_Reduction):
     """
     Class representing DROP1 algorithm. It reduces especially noise instances.
     """

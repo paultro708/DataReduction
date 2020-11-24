@@ -1,4 +1,4 @@
-from .__Reduction import __Reduction
+from ._Reduction import _Reduction
 from .. import DataPreparation
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
@@ -6,7 +6,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from collections import Counter
 from time import process_time
 
-class ENN(__Reduction):
+class ENN(_Reduction):
     """
     Class representing ENN algorithm. It reduces especially noise instances.
     """

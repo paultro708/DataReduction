@@ -1,4 +1,4 @@
-from .. import DataPreparation
+from ..DataPreparation import DataPreparation
 from ._Reduction import _Reduction
 import numpy as np
 import pandas as pd
@@ -13,7 +13,11 @@ from time import process_time
 
 class PCS(_Reduction):
 
-    def __init__(self, data: DataPreparation, r):
+    def __init__(self, data: DataPreparation, r: int):
+        if not isinstance(data, DataPreparation):
+            raise TypeError('Atribute data must be DataPreparation instance')
+        if type(r) != int:
+            raise TypeError('Atribute r must be int type!')
         self.data = data
         self.n_clusters = r*data.n_classes
         self.red_data = []
@@ -121,6 +125,8 @@ class PCS(_Reduction):
         TODO: ZeroDivisionException
         """
         count_of_values = len(indexes)
+        if count_of_values == 0:
+            raise Exception('Count of indexes in cluster can not be equal 0!')
         sum = 0
 
         # dimesionality of point
@@ -132,10 +138,7 @@ class PCS(_Reduction):
             for index in indexes:
                 actual_data = data_all[index]
                 sum += actual_data[feature]
-            try:
-                mean_point = np.append(mean_point, sum/count_of_values)
-            except ZeroDivisionError:
-                print('Can not division by 0!')
+            mean_point = np.append(mean_point, sum/count_of_values)
 
         return mean_point
 
@@ -279,7 +282,7 @@ class PCS(_Reduction):
         return np_red_data, np_red_col
 
     def reduce_instances(self, return_time = False):
-        print('Dzieje sie magia')
+        print('Reducing with PCS algorithm ...')
         start = process_time()
         # create clusters
         clusters = self.create_clusters(data = self.data.data_all_train, number_of_clusters = self.n_clusters)
@@ -323,34 +326,35 @@ class PCS(_Reduction):
 # plt.scatter(enn.red_data[:,0], enn.red_data[:,1], c=red)#,c=reduction.red_lab)
 # plt.show()
 
+if __name__ == "__main__":
 
-data = DataPreparation('pendigits')#("iris")
-#data.load_dataset()
-#data.prepare_dataset()
-print(len(data.data_all_train))
-print(data.n_classes)
-reduction = ENN(data)#(data,20)
+    data = DataPreparation('pendigits')#("iris")
+    #data.load_dataset()
+    #data.prepare_dataset()
+    print(len(data.data_all_train))
+    print(data.n_classes)
+    reduction = ENN(data)#(data,20)
 
-start = time.clock()
-print("Time of reduction: {} !".format(reduction.reduce_instances(return_time=True)))
-end = time.clock()
-print("Time:")
-print(end - start)
+    start = time.clock()
+    print("Time of reduction: {} !".format(reduction.reduce_instances(return_time=True)))
+    end = time.clock()
+    print("Time:")
+    print(end - start)
 
-orig = []
-for i in data.data_label_train: #range(len(data.data_all_train)):
-    orig.append(data.class_dict[i])
-orig = np.array(orig)
-red = []
-for i in reduction.red_lab: #range(len(data.data_all_train)):
-    red.append(data.class_dict[i])
-red = np.array(red)
+    orig = []
+    for i in data.data_label_train: #range(len(data.data_all_train)):
+        orig.append(data.class_dict[i])
+    orig = np.array(orig)
+    red = []
+    for i in reduction.red_lab: #range(len(data.data_all_train)):
+        red.append(data.class_dict[i])
+    red = np.array(red)
 
-plt.scatter(data.data_all_train[:,0], data.data_all_train[:,1], c = orig) #,c=data.data_label_train)
-plt.savefig(".\\plots\\original.png")
-plt.scatter(reduction.red_data[:, 0], reduction.red_data[:, 1], c=red)#,c=reduction.red_lab)
-plt.savefig(".\\plots\\reduced.png")
+    plt.scatter(data.data_all_train[:,0], data.data_all_train[:,1], c = orig) #,c=data.data_label_train)
+    plt.savefig(".\\plots\\original.png")
+    plt.scatter(reduction.red_data[:, 0], reduction.red_data[:, 1], c=red)#,c=reduction.red_lab)
+    plt.savefig(".\\plots\\reduced.png")
 
-raport = Raport(data, reduction.red_data, reduction.red_lab)
-raport.print_raport()
+    raport = Raport(data, reduction.red_data, reduction.red_lab)
+    raport.print_raport()
 
