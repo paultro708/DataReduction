@@ -92,6 +92,10 @@ class DataPreparation:
         except NameError:
             raise NotLoadedException('Dataset must be loaded before preparation')
 
+        #is empty
+        if self.dataset.empty:
+            raise Exception('Dataset is empty!')
+
         #constains more than one column
         if len(self.dataset.columns) < 2:
             raise Exception('Dataset must have minimum 2 columns! Please check if you select apriopriate filepath or separator.')
@@ -101,12 +105,22 @@ class DataPreparation:
             raise Exception('Dataset contains Nan values. Please fill missing values before use class.')
 
         #constains class column
-        if self.class_col in self.dataset.columns:
+        #check if it is index
+        if self.class_col not in self.dataset.columns:
+            if type(self.class_col) == int:
+                if self.class_col > len(self.dataset.columns):
+                    raise IndexError('Index of class column is out of range')
+                self.data_label = self.dataset.iloc[:,self.class_col]
+                self.data_all = self.dataset.drop(self.dataset.columns[self.class_col], asix=1)
+            elif type(self.class_col) != str:
+                raise TypeError('Class column must be type str or int')
+            else:
+                raise KeyError('Selected class column is wrong. Please select existing column name or index'.format(self.class_col))
+        else:
             self.data_label = self.dataset[self.class_col]
             self.data_all = self.dataset.drop(columns=self.class_col)
-            self.features = self.data_all.columns.values.tolist()
-        else:
-            raise Exception('Please select existing column name as class column.')
+
+        self.features = self.data_all.columns.values.tolist()
 
         #constains only numeric values
         for col in self.data_all.columns:
@@ -114,7 +128,7 @@ class DataPreparation:
                 raise Exception('Dataset constains non numeric values.')
     
 
-    def __init__(self, name = None, filepath = None, class_col = 'class', sep = ','):
+    def __init__(self, name:str = None, filepath = None, class_col = 'class', sep = ','):
         """
         Initialize dataset
 
@@ -128,35 +142,44 @@ class DataPreparation:
                 "segment",
                 "satimage" or
                 "yeast"
+
+        filepath - absolute path of file or relative path of file to working directory
         """
-        if (name is None) and (filepath is None):
-            raise Exception('Can not load data without name of dataset or filepath of dataset file!')
         
         self.class_col = class_col
 
+        #if selected availiable dataset by name
+        if name is not None:
+            if type(name) != str:
+                raise TypeError('Wrong type of dataset name. Please select apriopriate name with str type')
+            if name not in dataset_path:      
+                raise ValueError('Dataset {} not found. Please select apriopriate dataset name!'.format(name))
+            else:
+                self.dataset = pd.read_csv(dataset_path[name])
+                self.load_csv()
+                self.prepare_dataset()
+
         #if selected file
-        if filepath:
+        elif filepath is not None:
+            if not os.path.isabs(filepath):
+                filepath = os.path.join(os.getcwd(), filepath)
+            if type(sep) != str:
+                raise TypeError('Can not use {} separator. Separator must be str type.'.format(sep))
             try: 
                 self.dataset = pd.read_csv(filepath, sep = sep)
                 self.load_csv()
                 self.prepare_dataset()
             except FileNotFoundError:
-                raise Exception("File {} not found. Please select the existing csv file!".format(filepath))
+                raise FileNotFoundError("File {} not found. Please select the existing csv file!".format(filepath))
             except OSError:
-                raise Exception('Can not use file in path {}. Please select the apriopriate filepath!'.format(filepath))
+                raise OSError('Can not load file from path {}. Please select the apriopriate filepath!'.format(filepath))
             except ValueError:
-                raise Exception('Can not use file in path {}. Please select filepath with apriopriate extension!'.format(filepath))
-            except:
-                raise Exception('Please select csv filepath with apriopriate extension.')
+                raise ValueError('Can not use file in path {}. Please select filepath with apriopriate extension!'.format(filepath))
+            # except:
+            #     raise Exception('Please select csv filepath with apriopriate extension.')
         
-        #if selected availiable dataset by name
-        elif name:
-            if name not in dataset_path:
-                raise Exception('Dataset {} not found. Please select apriopriate dataset name!'.format(name))
-            else:
-                self.dataset = pd.read_csv(dataset_path[name])
-                self.load_csv()
-                self.prepare_dataset()
+        else:
+            raise Exception('Can not load data without name or filepath of dataset file!')
 
 
 

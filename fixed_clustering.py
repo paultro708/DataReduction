@@ -15,6 +15,10 @@ from sklearn.datasets import fetch_rcv1
 from sklearn import datasets
 from scipy.spatial import distance
 
+from Module.InstanceReduction.DataPreparation import DataPreparation
+
+x = DataPreparation()
+
 def unique(list): 
     '''
     Creates list with unique values from list

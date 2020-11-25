@@ -2,6 +2,9 @@ from Module.InstanceReduction.DataPreparation import DataPreparation
 import pytest
 # class DataPreparation_test:
 
+# @pytest.fixture()
+# def ok_datasets(request):
+
 
 @pytest.mark.parametrize("dataset, n_classes", [('iris', 3), ('pendigits', 10), ('letter', 26)])
 def test_n_classes(dataset, n_classes):
