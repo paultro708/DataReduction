@@ -7,8 +7,8 @@ class _NNGraph:
     Class representing neigbourhood 
     """
 
-    def __init__(self, data):
-        self.data = data
+    # def __init__(self, data):
+    #     self.data = data
 
     @staticmethod
     def group_neigh_enemies(labels, index, sort):
@@ -25,11 +25,12 @@ class _NNGraph:
         #init empty arrays
         neigh = []
         enemy = []
+
         for i in sort:
-                if labels[index] == labels[i]:
-                    neigh.append(i)
-                else:
-                    enemy.append(i)
+            if labels[index] == labels[i]:
+                neigh.append(i)
+            else:
+                enemy.append(i)
 
         return neigh, enemy
 
@@ -62,43 +63,12 @@ class _NNGraph:
         n_ins = len(data)
 
         # #init arrays
-        # self.sort = np.array([])
-        # self.sort_id = np.array([])
-        # self.neigh = np.array([])
-        # self.enemy = np.array([])
-        # self.assot = np.array([])
-        #init arrays
         self.sort = []
         self.sort_id = []
         self.neigh = []
         self.enemy = []
         self.assot = []
 
-        # for i in range(n_ins):
-        #     self.sort = np.append(self.sort, np.array(list))
-        #     self.sort_id = np.append(self.sort_id, np.array(list))
-        #     self.neigh = np.append(self.neigh, np.array(list))
-        #     self.enemy = np.append(self.enemy, np.array(list))
-        #     self.assot = np.append(self.assot, np.array(list))
-    
-
-        # #create array with indexes of nearest enemy
-        # for i in range(n_ins):
-        #     # #sort by distance
-        #     # self.sort_id[i] = np.argsort(self.dist_arr[i])
-
-        #     # #create sorted array with indexes of neighbours with same label and enemies - with different label
-        #     # self.neigh[i], self.enemy[i] = self.group_neigh_enemies(labels, i, self.sort_id[i])
-            
-        #     # #add i to assotiates:
-        #     # for n in self.neigh[i]:
-        #     #     l = self.assot[n]
-        #     #     l.append(i)
-        #     #     self.assot[n] = l
-        #     np.appenf
-
-        #     for i in range(n_ins):
-        #         self.sort = np.append(self.sort, np.array(list))
         for i in range(n_ins):
             self.assot.append([])
         #create array with indexes of nearest enemy
@@ -111,6 +81,6 @@ class _NNGraph:
             self.neigh.append(n)
             self.enemy.append(e)
             
-            # #add i to assotiates:
+            #add i to assotiates:
             for n in self.neigh[i]:
                 self.assot[n].append(i)

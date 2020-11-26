@@ -1,5 +1,6 @@
 from Module.InstanceReduction.DataPreparation import DataPreparation
 import pytest
+from Module.tests.const import names, wrong_names, wrong_name_types, wrong_sep_types
 # class DataPreparation_test:
 
 def test_load_empty():
@@ -10,31 +11,22 @@ def test_load_empty():
 
 #tests with named dataset
 
-#@pytest.mark.parametrize("dataset, n_classes", [('iris', 3), ('pendigits', 10), ('letter', 26)])
-@pytest.fixture(params = ['iris', 'pendigits', 'letter'])
-def dataset_named(request):
-    return DataPreparation(request.param)
 
-# @pytest.fixture(params = ['iriss', 0, 'xf'])
-# def dataset_named_wrong(request):
-#     return request.param
-
-
-def test_load_named(dataset_named):
+def test_load_named(data):
     
-    assert dataset_named.data_all is not None
-    assert dataset_named.dataset is not None
+    assert data.data_all is not None
+    assert data.dataset is not None
 
-@pytest.mark.parametrize("wrong_name", ['iriss', 'xg', '0'])
-def test_load_named_wrong_name(wrong_name):
+
+@pytest.mark.parametrize("wrong_names", wrong_names)
+def test_load_named_wrong_name(wrong_names):
     with pytest.raises(ValueError):
-        wg = DataPreparation(wrong_name)
+        wg = DataPreparation(wrong_names)
 
-
-@pytest.mark.parametrize("wrong_name_type", [False, True, 0, 12, dict(), set(), tuple(), []])
-def test_load_named_wrong_name(wrong_name_type):
+@pytest.mark.parametrize("wrong_name_types", wrong_name_types)
+def test_load_named_wrong_name_types(wrong_name_types):
     with pytest.raises(TypeError):
-        wg = DataPreparation(wrong_name_type)
+        wg = DataPreparation(wrong_name_types)
 
 def test_load_named_more():
     """Check loading data with apriopriate name of dataset and different args. Should take into account dataset name.
@@ -78,9 +70,9 @@ def test_load_file_notcsv():
         d = DataPreparation(filepath="D:\Studia\inz\download.pdf")
 
 
-@pytest.mark.parametrize("wrong_sep_type", [False, True, 0, 12, dict(), set(), tuple(), []])
-def test_load_file_wrong_sep(wrong_sep_type):
+@pytest.mark.parametrize("wrong_sep_types", wrong_sep_types)
+def test_load_file_wrong_sep(wrong_sep_types):
     """Check raising TypeError when wrong separator
     """
     with pytest.raises(TypeError):
-        d = DataPreparation(filepath="Module\InstanceReduction\datasets_csv\iris.csv", sep = wrong_sep_type)
+        d = DataPreparation(filepath="Module\InstanceReduction\datasets_csv\iris.csv", sep = wrong_sep_types)

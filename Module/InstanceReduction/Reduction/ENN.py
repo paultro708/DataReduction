@@ -1,5 +1,5 @@
 from ._Reduction import _Reduction
-from .. import DataPreparation
+from ..DataPreparation import DataPreparation
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 from sklearn.neighbors import KNeighborsClassifier
@@ -11,11 +11,20 @@ class ENN(_Reduction):
     Class representing ENN algorithm. It reduces especially noise instances.
     """
 
-    def __init__(self, data: DataPreparation, k=5):
+    def __init__(self, data: DataPreparation, k: int=5):
+        if not isinstance(data, DataPreparation):
+            raise TypeError('Atribute \'data\' must be DataPreparation instance')
         self.data = data
         self.k = k
         self.red_data = self.data.data_all_train
         self.red_lab = self.data.data_label_train
+
+        if type(k) != int:
+            raise TypeError('k atribute must be integer value')
+        elif k < 1:
+            raise ValueError('k atribute must have value not less than 1')
+        elif k >= len(self.red_lab):
+            raise ValueError('k atribute must have value less than number of instances in dataset')
 
     def find_majority_class_knn(self, point, neigh):
         """

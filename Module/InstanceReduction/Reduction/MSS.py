@@ -1,21 +1,29 @@
 from ._Reduction import _Reduction
-from .. import DataPreparation
+from ..DataPreparation import DataPreparation
 import numpy as np
 from sklearn.neighbors import NearestNeighbors
 from sklearn.neighbors import KNeighborsClassifier
 from collections import Counter
 from time import process_time
 from scipy.spatial import distance
-import datetime
+from time import process_time
 
 class MSS(_Reduction):
     """
     Class representing ENN algorithm. It reduces especially noise instances.
     """
 
-    def __init__(self, data: DataPreparation, k=5):
+    def __init__(self, data: DataPreparation, k: int=3):
+        if not isinstance(data, DataPreparation):
+            raise TypeError('Atribute \'data\' must be DataPreparation instance')
         self.data = data
         self.k = k
+        if type(k) != int:
+            raise TypeError('k atribute must be integer value')
+        elif k < 1:
+            raise ValueError('k atribute must have value not less than 1')
+        elif k >= len(self.data.data_label_train):
+            raise ValueError('k atribute must have value less than number of instances in dataset')
         self.red_data = []
         self.red_lab = []
 
@@ -98,4 +106,4 @@ class MSS(_Reduction):
         end = process_time()
 
         if return_time:
-            return str(datetime.timedelta(seconds=(end - start))) 
+            return end - start

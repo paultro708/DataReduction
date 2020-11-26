@@ -79,7 +79,7 @@ class DataPreparation:
         #     self.dataset = pd.read_csv(path)
         # else:
         if self.dataset_name not in dataset_path:
-            raise Exception("Please select right dataset name!")
+            raise ValueError('Please select appropriate dataset name!') #Exception("Please select appropriate dataset name!")
         else:
             self.dataset = pd.read_csv(dataset_path[self.dataset_name])
 
@@ -94,7 +94,6 @@ class DataPreparation:
             self.data_label = self.dataset[self.class_col]
         except KeyError:
             raise Exception("Please select the existing column name as column with labels!")
-            return
         #drop column with label 
         self.data_all = self.dataset.drop(columns=self.class_col)
         self.features = self.data_all.columns.values.tolist()

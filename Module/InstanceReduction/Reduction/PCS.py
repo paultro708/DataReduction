@@ -13,13 +13,19 @@ from time import process_time
 
 class PCS(_Reduction):
 
-    def __init__(self, data: DataPreparation, r: int):
+    def __init__(self, data: DataPreparation, r: int = 3):
         if not isinstance(data, DataPreparation):
-            raise TypeError('Atribute data must be DataPreparation instance')
+            raise TypeError('Atribute \'data\' must be DataPreparation instance')
         if type(r) != int:
-            raise TypeError('Atribute r must be int type!')
+            raise TypeError('r atribute must be integer value')
+        elif r < 1:
+            raise ValueError('r atribute must have value not less than 1')
+    
         self.data = data
         self.n_clusters = r*data.n_classes
+        if self.n_clusters >= len(self.data.data_label_train):
+            raise ValueError('The multiple of the number of classes cannot be greater than the number of instances')
+
         self.red_data = []
         self.red_lab = []
 

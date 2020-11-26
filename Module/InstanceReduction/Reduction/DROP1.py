@@ -1,5 +1,5 @@
 from ._Reduction import _Reduction
-from .. import DataPreparation
+from ..DataPreparation import DataPreparation
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from time import process_time
@@ -10,12 +10,20 @@ class DROP1(_Reduction):
     Class representing DROP1 algorithm. It reduces especially noise instances.
     """
 
-    def __init__(self, data: DataPreparation, k=3):
+    def __init__(self, data: DataPreparation, k: int=3):
+        if not isinstance(data, DataPreparation):
+            raise TypeError('Atribute \'data\' must be DataPreparation instance')
         self.data = data
         self.k = k
+        if type(k) != int:
+            raise TypeError('k atribute must be integer value')
+        elif k < 1:
+            raise ValueError('k atribute must have value not less than 1')
+        elif k >= len(self.data.data_label_train):
+            raise ValueError('k atribute must have value less than number of instances in dataset')
         self.red_data = self.data.data_all_train
         self.red_lab = self.data.data_label_train
-        self.graph = _NNGraph(data)
+        self.graph = _NNGraph()
         self.graph.create_graph(self.data.data_all_train, self.data.data_label_train)
 
     @staticmethod
