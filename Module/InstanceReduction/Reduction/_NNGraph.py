@@ -22,6 +22,17 @@ class _NNGraph:
         :neigh: - array of points with same label as point with :index:
         :enemy: - array of points with diferent label than point with :index:
         """
+
+        for l in [labels, sort]:
+            if type(l) == np.ndarray and (l.ndim != 1 or l.size == 0):
+                raise ValueError('\'{}\' must be 1d not empty numpy array'.format(l))
+            elif type(l) == list and len(l) == 0:
+                raise ValueError('\'{}\' must be not empty list'.format(l))
+            elif type(l) != (np.ndarray and list):
+                raise TypeError('\'{}\' must be list or numpy array'.format(l))
+        if type(index) != int:
+            raise TypeError('index must be integer value')
+        
         #init empty arrays
         neigh = []
         enemy = []
