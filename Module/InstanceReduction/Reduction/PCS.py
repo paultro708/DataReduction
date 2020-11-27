@@ -32,8 +32,8 @@ class PCS(_Reduction):
     @staticmethod
     def create_clusters(data, number_of_clusters=20):
         """
-        Function creating n_clusters from data
-        Return array of labels of created clusters.
+        Function creating :n_clusters: clusters from data
+        Return array of labels of created clusters from 0 to :number_of_clusters: -1
         """
 
         # creating clusters using k-means algorithm
@@ -141,7 +141,8 @@ class PCS(_Reduction):
         sum = 0
 
         # dimesionality of point
-        count_of_features = data_all[0].shape[0]
+        if data_all.ndim == 1: count_of_features=1
+        else: count_of_features = data_all[0].shape[0]
         mean_point = np.array([])
 
         for feature in range(count_of_features):
