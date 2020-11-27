@@ -66,3 +66,19 @@ def test_group_n_e_lis(labels, index, sort, wrong_val):
         gr.group_neigh_enemies(wrong_val, index, sort)
     with pytest.raises(ValueError):
         gr.group_neigh_enemies(labels, index, wrong_val)
+
+
+class_dict = {0: 'k1', 1: 'k2', 2:'k3'}
+@pytest.mark.parametrize('class_dict', [class_dict])
+def test_predict(sort, class_dict, labels):
+    gr = _NNGraph()
+    assert gr.predict(sort, class_dict, labels, 5) == 0
+
+def test_create(data_iris,labels):
+    gr = _NNGraph()
+    gr.create_graph(data_iris.data_all, data_iris.data_label)
+    assert len(gr.enemy) != 0
+    assert len(gr.assot) != 0
+    assert len(gr.neigh) != 0
+
+

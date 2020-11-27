@@ -29,7 +29,8 @@ class PCS(_Reduction):
         self.red_data = []
         self.red_lab = []
 
-    def create_clusters(self, data, number_of_clusters=20):
+    @staticmethod
+    def create_clusters(data, number_of_clusters=20):
         """
         Function creating n_clusters from data
         Return array of labels of created clusters.
@@ -42,7 +43,8 @@ class PCS(_Reduction):
 
         return clust.labels_
 
-    def group_id_by_cluster(self, clusters):
+    @staticmethod
+    def group_id_by_cluster(clusters):
         """
         Function grouping indexes of data by indexes of clusters
         Return dictionary
@@ -65,7 +67,8 @@ class PCS(_Reduction):
     #     self.red_data = np_red_data
     #     self.red_lab = np_red_data
 
-    def find_id_of_nearest_point(self, data_all, indexes, point):
+    @staticmethod
+    def find_id_of_nearest_point(data_all, indexes, point):
         """
         Function finding index of point in data, nearest to given point. Using for find nerest point of mean in homogeniuos cluster 
         TODO czy ma zwracać kilka indesów jeżeli takie same odległosci?
@@ -84,7 +87,8 @@ class PCS(_Reduction):
 
         return id
 
-    def find_nearest_instance(self, element, indexes_of_data, data_all):
+    @staticmethod
+    def find_nearest_instance(element, indexes_of_data, data_all):
         """
         Function return index of nearest instance to given
         element - index of instance 
@@ -93,9 +97,9 @@ class PCS(_Reduction):
         """
         point = data_all[element]
         # first temporary index
-        id = 0
+        idx = 0
         # minimal distance, for now - the first distance
-        min_dist = distance.euclidean(point, data_all[id])
+        min_dist = distance.euclidean(point, data_all[idx])
         for i in indexes_of_data:
             if i == element:
                 break
@@ -103,11 +107,12 @@ class PCS(_Reduction):
             dist = distance.euclidean(point, data)
             if min_dist > dist:
                 min_dist = dist
-                id = i
+                idx = i
 
-        return id
+        return idx
 
-    def find_majority_class(self, number_of_classes, classes_with_indexes):
+    @staticmethod
+    def find_majority_class(number_of_classes, classes_with_indexes):
         """
         Function return index of majority class
         """

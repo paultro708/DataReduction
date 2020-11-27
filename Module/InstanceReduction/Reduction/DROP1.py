@@ -29,19 +29,17 @@ class DROP1(_Reduction):
     @staticmethod
     def find_data_and_labels(tab, dataset, labelset):
         """
-        Function finding data and labels for indexes in tab in dataset
+        Function finding data and labels for indexes in tab
         """
         #data of instances
         data_ins = []
         #labels of instances
         label_ins = []
+
         for i in tab:
             data_ins.append(dataset[i])
             label_ins.append(labelset[i])
         
-        # if data_ins == []:
-        #     return [data_ins], [label_ins]
-        # else:
         return data_ins, label_ins
 
 
@@ -51,14 +49,15 @@ class DROP1(_Reduction):
         """
         #data of instances in ANN 
         #excepted labels of instances
-        data_for_pred, label_expct = self.find_data_and_labels(self.graph.assot[index], self.data.data_all_train, self.data.data_label_train) 
+        label_expct = self.find_data_and_labels(self.graph.assot[index], 
+                                                self.data.data_all_train, 
+                                                self.data.data_label_train)[1]
 
-        #pred = knn.predict(data_for_pred)
         #count correctly classified instances in assotiates
         n = 0
         #for each assotiate of id
         for i, val in enumerate (self.graph.assot[index]):
-            if self.graph.predict(val, self.data.class_dict, self.data.data_label_train, k, without) == label_expct[i]:
+            if self.graph.predict(self.graph.sort_id[val], self.data.class_dict, self.data.data_label_train, k, without) == label_expct[i]:
                 n = n+1
 
         return n

@@ -24,11 +24,13 @@ class _NNGraph:
         """
 
         for l in [labels, sort]:
+            x = type(l)
             if type(l) == np.ndarray and (l.ndim != 1 or l.size == 0):
                 raise ValueError('\'{}\' must be 1d not empty numpy array'.format(l))
             elif type(l) == list and len(l) == 0:
                 raise ValueError('\'{}\' must be not empty list'.format(l))
-            elif type(l) != (np.ndarray and list):
+            
+            elif type(l) not in [np.ndarray, list]:
                 raise TypeError('\'{}\' must be list or numpy array'.format(l))
         if type(index) != int:
             raise TypeError('index must be integer value')
@@ -44,8 +46,9 @@ class _NNGraph:
                 enemy.append(i)
 
         return neigh, enemy
-
-    def predict(self, index, class_dict, labels, k, without = None):
+        
+    @staticmethod
+    def predict(sort_id, class_dict, labels, k, without = None):
         """
         Create prediction of label by k nearest neighbours
         Return true or false if 
@@ -59,7 +62,7 @@ class _NNGraph:
         for n in range(1, k+1):
             if n == without:
                 break
-            l = labels[self.sort_id[index][n]]
+            l = labels[sort_id[n]]
             n_cl[l] = n_cl[l] + 1
         
         #return label withmax

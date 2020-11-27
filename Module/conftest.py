@@ -15,3 +15,6 @@ def reduction_alg(request, data):
 def reduction_alg_names(request):
     return request.param
 
+@pytest.fixture(scope = 'module')
+def data_prepar_iris(request):
+    return DataPreparation('iris')

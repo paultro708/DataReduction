@@ -26,7 +26,8 @@ class ENN(_Reduction):
         elif k >= len(self.red_lab):
             raise ValueError('k atribute must have value less than number of instances in dataset')
 
-    def find_majority_class_knn(self, point, neigh):
+    @staticmethod
+    def find_majority_class_knn(red_lab, point, neigh):
         """
         Function for k nearest neighbors check the majority class and returns it
         """
@@ -34,7 +35,7 @@ class ENN(_Reduction):
         indexes = neigh.kneighbors([point], return_distance = False)
         classes = []
         for idx in indexes:
-            classes.append(self.red_lab[idx])
+            classes.append(red_lab[idx])
         #check labels of indexes and choose majority
         return Counter(classes[0]).most_common(1)[0][0]
     
@@ -56,7 +57,7 @@ class ENN(_Reduction):
         for idx in range(n_instances):
             instance_class = self.red_lab[idx]
             # if (instance_class != self.find_majority_class_knn(self.red_data[idx], neigh)):
-            if instance_class != self.find_majority_class_knn(self.red_data[idx], neigh):
+            if instance_class != self.find_majority_class_knn(self.red_lab, self.red_data[idx], neigh):
                 flag_data[idx] = 1
                 remove_id.append(idx)
                 # ne = NearestNeighbors(n_neighbors= 15).fit(self.red_data)
