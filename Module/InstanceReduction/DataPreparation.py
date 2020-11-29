@@ -19,46 +19,27 @@ def create_path_csv(folder, name):
 
 #path of folder with datasets in csv format
 datasets_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "datasets_csv") # "datasets_csv"
+extension ='.csv'
 
-#dictionary of names of datasets and paths
-dataset_path = {"iris": create_path_csv(datasets_folder, 'iris'),
-                "glass": create_path_csv(datasets_folder, 'glass'),
-                "letter": create_path_csv(datasets_folder, 'letter'),
-                "liver": create_path_csv(datasets_folder, 'liver'),
-                "pendigits": create_path_csv(datasets_folder, 'pendigits'),
-                "spambase": create_path_csv(datasets_folder, 'spambase'),
-                "segment": create_path_csv(datasets_folder, 'segment'),
-                "satimage": create_path_csv(datasets_folder, 'satimage'),
-                "yeast": create_path_csv(datasets_folder, 'yeast')
+dataset_path = {"iris": os.path.join(datasets_folder, 'iris'+extension),
+                "glass": os.path.join(datasets_folder, 'glass' + extension),
+                "letter": os.path.join(datasets_folder, 'letter' + extension),
+                "liver": os.path.join(datasets_folder, 'liver'+ extension),
+                "pendigits": os.path.join(datasets_folder, 'pendigits'+ extension),
+                "spambase": os.path.join(datasets_folder, 'spambase'+ extension),
+                "segment": os.path.join(datasets_folder, 'segment'+ extension),
+                "satimage": os.path.join(datasets_folder, 'satimage'+ extension),
+                "yeast": os.path.join(datasets_folder, 'yeast'+ extension)
                 }
-
 
 class DataPreparation:
     """
     Class using for loading possible datasets and preparing for reducing algorithms and raports
-
-
-    Atributes:
-    :dataset_name: name of dataset
     """
-    
-    # def load_dataset(self):
-    #     """
-    #     Function loading dataset to pandas dataframe
-    #     """
-        
-
-    #     # if path == 'default':
-    #     #     self.dataset = pd.read_csv(path)
-    #     # else:
-    #     if self.dataset_name not in dataset_path:
-    #         raise Exception("Please select right dataset name!")
-    #     else:
-    #         self.dataset = pd.read_csv(dataset_path[self.dataset_name])
 
     def prepare_dataset(self):
         """
-        Function preparing dataset for reduction
+        Function preparing dataset for reduction - getting out metadata and split dataset to train and test subsets.
         """
         #normalize data
         self.data_all = normalize(self.data_all)
@@ -85,7 +66,16 @@ class DataPreparation:
 
 
     def load_csv(self):
-    
+        """Function checking whether the loaded data set meets the basic requirements and getting out metadata
+
+        Raises:
+            NotLoadedException: when dataset has not been loaded
+            Exception: when dataset is empty, has not enough count of columns, contains missing values or contains nonumeric values
+            IndexError: when the given index of column selected as class column is out of range
+            TypeError: when the given column selected as class column is wrong type. 
+            :class_col must be str type with the name of column or int means index of column
+            KeyError: when the given column name not exists in dataset 
+        """
         #check loaded
         try:
             self.dataset == None
@@ -115,35 +105,45 @@ class DataPreparation:
             elif type(self.class_col) != str:
                 raise TypeError('Class column must be type str or int')
             else:
-                raise KeyError('Selected class column is wrong. Please select existing column name or index'.format(self.class_col))
+                raise KeyError('Selected class column {} is wrong. Please select existing column name or index'.format(self.class_col))
         else:
             self.data_label = self.dataset[self.class_col]
             self.data_all = self.dataset.drop(columns=self.class_col)
 
         self.features = self.data_all.columns.values.tolist()
 
-        #constains only numeric values
+        #check if constains only numeric values
         for col in self.data_all.columns:
             if not is_numeric_dtype(self.data_all[col]):
                 raise Exception('Dataset constains non numeric values.')
     
 
     def __init__(self, name:str = None, filepath = None, class_col = 'class', sep = ','):
-        """
-        Initialize dataset
+        # """
+        # Initialize dataset
 
-        :name: name of dataset - one of: 
-                "iris", 
-                "glass", 
-                "letter", 
-                "liver", 
-                "pendigits", 
-                "spambase", 
-                "segment",
-                "satimage" or
-                "yeast"
+        # :name: name of dataset - one of: 
+        #         "iris", 
+        #         "glass", 
+        #         "letter", 
+        #         "liver", 
+        #         "pendigits", 
+        #         "spambase", 
+        #         "segment",
+        #         "satimage" or
+        #         "yeast"
 
-        filepath - absolute path of file or relative path of file to working directory
+        # filepath - absolute path of file or relative path of file to working directory
+        # """
+        """Constructor of DataPreparation. It tries open file with pandas library. 
+        After that, loaded dataset is prepared for subsequent actions by calling apriopriate function.
+
+        Raises:
+            TypeError: when type of the given parameter is not apriopriate
+            ValueError: when then value of the given parameter is not apriopriate
+            FileNotFoundError: when the given file could not be found
+            OSError: when the given file could not be opened
+            Exception: when the given parameters or file are not appropriate for mapping data
         """
         
         self.class_col = class_col
