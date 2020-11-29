@@ -99,6 +99,8 @@ class MSS(_Reduction):
             if add and i not in added:
                 self.red_data.append(self.data.data_all_train[i])
                 self.red_lab.append(self.data.data_label_train[i])
+                # self.red_data = np.append(self.red_data, self.data.data_all_train[i])
+                # self.red_lab = np.append(self.red_lab, self.data.data_label_train[i])
                 added.append(i)
 
         self.prepare_reduced()

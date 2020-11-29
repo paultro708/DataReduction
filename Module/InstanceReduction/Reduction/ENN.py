@@ -16,14 +16,14 @@ class ENN(_Reduction):
             raise TypeError('Atribute \'data\' must be DataPreparation instance')
         self.data = data
         self.k = k
-        self.red_data = self.data.data_all_train
-        self.red_lab = self.data.data_label_train
+        self.red_data = []
+        self.red_lab = []
 
         if type(k) != int:
             raise TypeError('k atribute must be integer value')
         elif k < 1:
             raise ValueError('k atribute must have value not less than 1')
-        elif k >= len(self.red_lab):
+        elif k >= len(self.data.data_all_train):
             raise ValueError('k atribute must have value less than number of instances in dataset')
 
     @staticmethod
@@ -42,6 +42,8 @@ class ENN(_Reduction):
 
     def reduce_instances(self, return_time = False):
         print('Dzieje sie magia ENN')
+        self.red_data = self.data.data_all_train
+        self.red_lab = self.data.data_label_train
         start = process_time()
         n_instances = len(self.data.data_label_train)
 

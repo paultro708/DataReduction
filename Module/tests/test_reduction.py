@@ -10,17 +10,17 @@ from Module.tests.const import tuples, names, to_large_k
 def data_preparation_ok():
     return DataPreparation('iris')
 
-def test_reducing(data, reduction_alg):
-    d = data
-    reduction_alg.reduce_instances()
-    assert len(reduction_alg.red_lab) < len(d.data_label_train)
-    assert reduction_alg.red_data.shape[0] < d.data_all_train.shape[0]
+def test_reducing(data_preparation_ok, reduction_alg_iris):
+    d = data_preparation_ok
+    reduction_alg_iris.reduce_instances()
+    assert len(reduction_alg_iris.red_lab) < len(d.data_label_train)
+    assert reduction_alg_iris.red_data.shape[0] < d.data_all_train.shape[0]
 
-def test_reducing_time(data, reduction_alg):
-    d = data
-    time = reduction_alg.reduce_instances(True)
-    assert len(reduction_alg.red_lab) < len(d.data_label_train)
-    assert reduction_alg.red_data.shape[0] < d.data_all_train.shape[0]
+def test_reducing_time(data_preparation_ok, reduction_alg_iris):
+    d = data_preparation_ok
+    time = reduction_alg_iris.reduce_instances(True)
+    assert len(reduction_alg_iris.red_lab) < len(d.data_label_train)
+    assert reduction_alg_iris.red_data.shape[0] < d.data_all_train.shape[0]
     assert time > 0
 
 @pytest.mark.parametrize('data', [1, (-1.45), 'str', [], False, None])

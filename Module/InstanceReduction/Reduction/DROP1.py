@@ -21,8 +21,8 @@ class DROP1(_Reduction):
             raise ValueError('k atribute must have value not less than 1')
         elif k >= len(self.data.data_label_train):
             raise ValueError('k atribute must have value less than number of instances in dataset')
-        self.red_data = self.data.data_all_train
-        self.red_lab = self.data.data_label_train
+        self.red_data = []
+        self.red_lab = []
         self.graph = _NNGraph()
         self.graph.create_graph(self.data.data_all_train, self.data.data_label_train)
 
@@ -65,6 +65,9 @@ class DROP1(_Reduction):
 
     def reduce_instances(self, return_time = False):
         print('Dzieje sie magia DROP1')
+        self.red_data = self.data.data_all_train
+        self.red_lab = self.data.data_label_train
+
         """
         TODO k+1 dla without i k dla with
         """

@@ -58,6 +58,17 @@ def test_find_majority_class(tmp_pcs):
 
 def test_mean_point_clst(tmp_pcs):
     dat = np.array([0, 0.4, 5, 2, 2.5])
-    ids = np.array([0,1,3])
-    assert tmp_pcs.mean_point_in_cluster(dat, ids) == 0.8
+    ids = np.array([0,3])
+    assert tmp_pcs.mean_point_in_cluster(dat, ids) == 1.0 #'{0:.1f}'.format(tmp_pcs.mean_point_in_cluster(dat, ids)) == '0.8'
+
+# def test_mean_point_clst_empty(tmp_pcs):
+#     arr = np.array([4,5])
+#     emp = np.array([])
+#     with pytest.raises(ValueError, match="empty"):
+#         tmp_pcs.mean_point_in_cluster(arr, emp)
+#         tmp_pcs.mean_point_in_cluster(emp, arr)
+
+@pytest.mark.parametrize('clust, n_cls, expected', [([0,0,1,2], 3, False), ([2,2,2,2], 3, True)])
+def test_check_homogenious(clust, n_cls, expected, tmp_pcs):
+    assert tmp_pcs.check_homogenious(n_cls, clust) == expected
 

@@ -132,7 +132,6 @@ class PCS(_Reduction):
         Function calculating mean point in cluster.
         data_all - training dataset
         indexes - array of indexes of cluster form training dataset
-
         TODO: ZeroDivisionException
         """
         count_of_values = len(indexes)
@@ -145,12 +144,17 @@ class PCS(_Reduction):
         else: count_of_features = data_all[0].shape[0]
         mean_point = np.array([])
 
-        for feature in range(count_of_features):
+        if count_of_features == 1:
             sum = 0
-            for index in indexes:
-                actual_data = data_all[index]
-                sum += actual_data[feature]
-            mean_point = np.append(mean_point, sum/count_of_values)
+            for index in indexes: sum += data_all[index]
+            return sum/count_of_values
+        else: 
+            for feature in range(count_of_features):
+                sum = 0
+                for index in indexes:
+                    actual_data = data_all[index]
+                    sum += actual_data[feature]
+                mean_point = np.append(mean_point, sum/count_of_values)
 
         return mean_point
 
@@ -173,7 +177,7 @@ class PCS(_Reduction):
 
         return classes_with_indexes
 
-    def check_homogenious(self, cluster):
+    def check_homogenious(self, n_classes, cluster):
         """
         Function checking if the cluster is homogenious or not
         Return True if is, False if not.
@@ -182,7 +186,7 @@ class PCS(_Reduction):
 
         is_homogeniuos = True
         count_of_classes_in_cluster = 0
-        for i in range(self.data.n_classes):
+        for i in range(n_classes):
             if(len(grouped_cluster[i]) > 0):
                 count_of_classes_in_cluster += 1
         if (count_of_classes_in_cluster > 1):
@@ -194,11 +198,9 @@ class PCS(_Reduction):
         """
         Function prepare reduced dataset grouped by label for using in classificators
         reduced_set - dataset grouped by label
-
         Return:
         np_red_data - uninterrupted array of instances
         np_red_label - array of labels
-
         TODO: remove repeated values?
         """
 
@@ -217,13 +219,10 @@ class PCS(_Reduction):
     def clustering_reduction(self, clusters_with_id, data_all_train):
         """
         The main function of clustering reduction module
-
         :param clusters_with_id: - indexes of instances from training dataset grouped by indexes of clusters
         :param data_all_train: - training dataset
-
         :returns: np_red_data - reduced dataset received as a result
         np_red_col - labels of reduced dataset
-
         """
         classes_with_indexes = []
         # create empty reduced dataset
@@ -243,7 +242,7 @@ class PCS(_Reduction):
                     instance_id)
 
             # checking if the cluster is homogenious
-            is_homogeniuos = self.check_homogenious(clusters_with_id[i])
+            is_homogeniuos = self.check_homogenious(self.data.n_classes, clusters_with_id[i])
 
             if (is_homogeniuos):
                 # find index of majority class - in this case only one possible
@@ -369,4 +368,3 @@ if __name__ == "__main__":
 
     raport = Raport(data, reduction.red_data, reduction.red_lab)
     raport.print_raport()
-

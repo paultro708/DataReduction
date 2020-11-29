@@ -13,28 +13,28 @@ from sklearn.neural_network import MLPClassifier
 
 from sklearn.metrics import cohen_kappa_score
 from sklearn.metrics import classification_report 
-
+import os
 import time
 
 classifiers = {'knn': KNeighborsClassifier(), 
                 'svm': svm.SVC(), 
                 'naive_bayers': GaussianNB(), 
                 'decision_tree': DecisionTreeClassifier(),
-                'neutral_network': MLPClassifier()}
+                'neural_network': MLPClassifier()}
 
 classify_metrics = {"accuracy": accuracy_score,
                     "f1": f1_score,
                     "precision": precision_score,
                     "recall": recall_score}
 
-
 class Raport():
 
-    def __init__(self, original, reduced_data, reduced_label, c_type = 'all'):
+    def __init__(self, original, reduced_data, reduced_label):
         self.original = original
         self.reduced_data = reduced_data
         self.reduced_label = reduced_label
-        self.c_type = c_type
+        if 0 in [len(reduced_data), len(reduced_label)]:
+            raise Exception("Cannot create raport for empty reduced data")
 
     # def draw_plots(self, col1, col2):
     #     #prepare labels
@@ -52,22 +52,28 @@ class Raport():
     #     # plt.scatter(reduction.red_data[:, 0], reduction.red_data[:, 1], c=red)#,c=reduction.red_lab)
     #     # plt.savefig(".\\plots\\reduced.png")
     @staticmethod
-    def create_confusion_matrix(classifier, test_set, test_labels, title, filename, filepath, show = False, save = True):
+    def create_confusion_matrix(classifier, test_set, test_labels, title, filename, path, show = False, save = True):
         plot = plot_confusion_matrix(classifier, test_set, test_labels, cmap=plt.cm.Blues)
         #title = "Confusion matrix\n reduced data - classifier: " + str(c_type)
         plot.ax_.set_title(title)
-        if save:        
-            plot.figure_.savefig(filepath + filename)
+        if save:
+            if path == None:
+                path = os.path.join(os.getcwd(), 'plots')
+            if not os.path.exists(path):
+                os.makedirs(path)
+            # else if not os.path.isabs(filepath):
+            #     path = os.path.join(os.getcwd(), path)        
+            plot.figure_.savefig(os.path.join(path,filename))
         if show:
             plt.show()
 
-    def raport(self, original_set, original_labels, reduced_set, reduced_labels, test_set, test_labels, c_type = 'all'):
+    def raport(self, original_set, original_labels, reduced_set, reduced_labels, test_set, test_labels, c_type, show_cf_matrix, path, save_cf_matrix):
         if (c_type !='all') and (c_type not in classifiers):
             raise Exception("Classifier type not exist in available set!")
         else:
             if c_type == 'all':
                 for c_t in classifiers:
-                    self.raport(original_set, original_labels, reduced_set, reduced_labels, test_set, test_labels, c_t)
+                    self.raport(original_set, original_labels, reduced_set, reduced_labels, test_set, test_labels, c_t,  show_cf_matrix, path, save_cf_matrix)
 
             else:
                 #select classifier
@@ -86,7 +92,7 @@ class Raport():
 
                 #create confusion matrix
                 title = "Confusion matrix\n original data - classifier: {}".format(str(c_type))
-                self.create_confusion_matrix(classifier, test_set, test_labels, title, "Original " + str(c_type),  ".\plots\\", True)
+                self.create_confusion_matrix(classifier, test_set, test_labels, title, "Original - " + c_type, path, show_cf_matrix, save_cf_matrix)
 
                 #print raport with metrics for original training data
                 print('=============')
@@ -115,7 +121,7 @@ class Raport():
 
                 #create confusion matrix
                 title = "Confusion matrix\n reduced data - classifier: {}".format(str(c_type))
-                self.create_confusion_matrix(classifier, test_set, test_labels, title, "Reduced " + str(c_type),  ".\plots\\", True)
+                self.create_confusion_matrix(classifier, test_set, test_labels, title, "Reduced - " + c_type, path, show_cf_matrix, save_cf_matrix)
 
                 print("\nRaport for reduced dataset")
                 print('Count of instances: ', len(reduced_labels))
@@ -147,10 +153,91 @@ class Raport():
         """
         pass
 
-    def print_raport(self, confusion_matrix = None):
+    def print_raport(self, c_type= 'all', show_cf_matrix = True, path = None, save_cf_matrix = False):
         # confusion_matrix = {filepath: "x", show = False, save = True}
-        self.raport(self.original.data_all_train, self.original.data_label_train, self.reduced_data, self.reduced_label, self.original.data_all_test, self.original.data_label_test, c_type = self.c_type)
+        self.raport(self.original.data_all_train, 
+                    self.original.data_label_train, 
+                    self.reduced_data, 
+                    self.reduced_label, 
+                    self.original.data_all_test, 
+                    self.original.data_label_test, 
+                    c_type,
+                    show_cf_matrix,
+                    path,
+                    save_cf_matrix)
     
+    # def print_raport(self, c_type = 'all', show_cf_matrix = True, path = None, save_cf_matrix = False):
+    #     original_set = self.original.data_all_train
+    #     original_labels = self.original.data_label_train
+    #     reduced_set= self.reduced_data
+    #     reduced_labels = self.reduced_label
+    #     test 
+
+    #     if (c_type !='all') and (c_type not in classifiers):
+    #         raise Exception("Classifier type not exist in available set!")
+    #     else:
+    #         if c_type == 'all':
+    #             for c_t in classifiers:
+    #                 self.raport(original_set, original_labels, reduced_set, reduced_labels, test_set, test_labels, c_t)
+
+    #         else:
+    #             #select classifier
+    #             classifier = classifiers[c_type]
+    #             #train with original dataset and time measure
+    #             start = time.clock()
+    #             classifier.fit(original_set, original_labels)
+    #             end = time.clock()
+    #             training_time = end - start
+
+    #             #make predictions and time measure
+    #             start = time.clock()
+    #             predict = classifier.predict(test_set)
+    #             end = time.clock()
+    #             prediction_time = end - start
+
+    #             #create confusion matrix
+    #             title = "Confusion matrix\n original data - classifier: {}".format(str(c_type))
+    #             self.create_confusion_matrix(classifier, test_set, test_labels, title, "Original " + str(c_type),  ".\plots\\", True)
+
+    #             #print raport with metrics for original training data
+    #             print('=============')
+    #             print("Classifier:  ", c_type)
+    #             print('=============')
+    #             print("Raport for original dataset")
+    #             print('Count of instances: ', len(original_labels))
+    #             print(classification_report(test_labels, predict)) 
+    #             print("Cohen's Kappa: {:.2f}".format(cohen_kappa_score(test_labels, predict)))
+    #             print('===')
+    #             print("Training time: ", training_time)
+    #             print("Predicting time: ", prediction_time)
+
+    #             #same for reduced training dataset
+    #             classifier = classifiers[c_type]
+    #             #train
+    #             start = time.clock()
+    #             classifier.fit(reduced_set, reduced_labels)
+    #             end = time.clock()
+    #             training_time = end - start
+    #             #predict
+    #             start = time.clock()
+    #             predict = classifier.predict(test_set)
+    #             end = time.clock()
+    #             prediction_time = end - start
+
+    #             #create confusion matrix
+    #             title = "Confusion matrix\n reduced data - classifier: {}".format(str(c_type))
+    #             self.create_confusion_matrix(classifier, test_set, test_labels, title, "Reduced " + str(c_type),  ".\plots\\", True)
+
+    #             print("\nRaport for reduced dataset")
+    #             print('Count of instances: ', len(reduced_labels))
+    #             print(classification_report(test_labels, predict))
+    #             print("Cohen's Kappa: {:.2f}".format(cohen_kappa_score(test_labels, predict)))
+    #             print('===')
+    #             print("Training time: ", training_time)
+    #             print("Predicting time: ", prediction_time, "\n")
+    #             print('Reduction factor: {:.2f} %'.format((len(original_labels) - len(reduced_labels))/len(original_labels)*100))
+    #             print('===')
+
    
 # raport_classify(data_all_train, data_label_train, np_red_data, np_red_col, data_all_test, data_label_test, 'knn')
     
