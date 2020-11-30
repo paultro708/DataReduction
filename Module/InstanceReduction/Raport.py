@@ -56,21 +56,49 @@ class Raport():
             raise Exception("Cannot create raport for empty reduced data")
 
 
-    # def draw_plots(self, col1, col2):
-    #     #prepare labels
-    #     orig = []
-    #     for i in self.original.data_label_train: #range(len(data.data_all_train)):
-    #         orig.append(self.original.class_dict[i])
-    #     orig = np.array(orig)
-    #     red = []
-    #     for i in self.reduced_data: #range(len(data.data_all_train)):
-    #         red.append(self.original.class_dict[i])
-    #     red = np.array(red)
+    def draw_plots(self, colx: str, coly: str, path = None, show:bool = True, save:bool = False):
+        """Function creating scatter plots with reduced and original data for given feature names
 
-    #     plt.scatter(data.data_all_train[:,0], data.data_all_train[:,1], c = orig) #,c=data.data_label_train)
-    #     plt.savefig(".\\plots\\original.png")
-    #     # plt.scatter(reduction.red_data[:, 0], reduction.red_data[:, 1], c=red)#,c=reduction.red_lab)
-    #     # plt.savefig(".\\plots\\reduced.png")
+        Args:
+            colx (str): name of column from dataset
+            coly (str): name of column from dataset
+            path: path where plots will be saved if parameter :save is True. Defaults to None. If :save is True and path has not been given, plots will save in dir 'plots' in working directory 
+            show (bool, optional): parameter for showing windows with plots. Defaults to True.
+            save (bool, optional): parameter for saving plots in :path. Defaults to False.
+        """
+        #prepare labels
+        orig = []
+        for i in self.original.data_label_train:
+            orig.append(self.original.class_dict[i])
+        orig = np.array(orig)
+        red = []
+        for i in self.reduced_label: 
+            red.append(self.original.class_dict[i])
+        red = np.array(red)
+
+        #get indexes of features
+        idx = self.original.features.index(colx)
+        idy = self.original.features.index(coly)
+
+        #create plots
+        for name, obj, col in [('Original dataset', self.original.data_all_train, orig), ('Reduced dataset', self.reduced_data, red)]:
+            fig, ax = plt.subplots()
+            scatter = ax.scatter(obj[:,idx], obj[:,idy], c = col)
+            legend = ax.legend(*scatter.legend_elements(), title="Classes")
+            ax.add_artist(legend)
+            plt.xlabel(self.original.features[idx])
+            plt.ylabel(self.original.features[idy])
+            plt.title(name)
+            if save:
+                if path == None:
+                    path = os.path.join(os.getcwd(), 'plots')
+                if not os.path.exists(path):
+                    os.makedirs(path)
+                filename = "{} {}({})".format(name, self.original.features[idx], self.original.features[idy])        
+                plt.savefig(os.path.join(path, filename))
+            if show:
+                plt.show()
+
 
     @staticmethod
     def create_confusion_matrix(classifier, test_set, test_labels, title:str, filename:str, path, show:bool, save:bool):
