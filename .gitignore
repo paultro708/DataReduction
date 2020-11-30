@@ -1,0 +1,6 @@
+__pycache__/
+.idea/
+.pytest_cache/
+.vscode/
+InstanceReduction/__pycache__/
+tests/__pycache__/
