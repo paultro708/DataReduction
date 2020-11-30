@@ -8,10 +8,26 @@ from time import process_time
 
 class ENN(_Reduction):
     """
-    Class representing ENN algorithm. It reduces especially noise instances.
+    Class representing ENN algorithm. It reduces especially noise instances. 
+
+    Attributes:
+        data (DataPreparation): instance of :DataPreparation class containing prepared dataset for ENN alhorithm application
+        k (int): number of nearest neighbours takein into account during reduction
+        red_data: array with selected data from training subset
+        red_lab: array with labels for :red_data
     """
 
     def __init__(self, data: DataPreparation, k: int=5):
+        """Constructor of ENN class. Edited Nearest Neighbours algorith removes instances which label dusagrees with majority class in k nearest neighbours set.
+
+        Args:
+            data (DataPreparation): instance of :DataPreparation class containing prepared dataset for ENN alhorithm application
+            k (int, optional): number of nearest neighbours takein into account during reduction. Defaults to 5.
+
+        Raises:
+            TypeError: when given parameter does not have apriopriate type
+            ValueError: when given :k value is less than 1 or greater than number of instances in reducting dataset.
+        """
         if not isinstance(data, DataPreparation):
             raise TypeError('Atribute \'data\' must be DataPreparation instance')
         self.data = data
@@ -28,19 +44,35 @@ class ENN(_Reduction):
 
     @staticmethod
     def find_majority_class_knn(red_lab, point, neigh):
+        """Function for k nearest neighbors check the majority class and returns it
+
+        Args:
+            red_lab: 1d array or list with labels 
+            point: point for which will checking k neighbours
+            neigh: fitted, sklearn K nearest neighbours classifier
+
+        Returns:
+            majority: index of majority class in k nearest neighbours of :point
         """
-        Function for k nearest neighbors check the majority class and returns it
-        """
-        # neigh = NearestNeighbors(n_neighbors = self.k).fit(self.red_data)
+        # get indexes of nearest neighbours for given point
         indexes = neigh.kneighbors([point], return_distance = False)
         classes = []
         for idx in indexes:
             classes.append(red_lab[idx])
         #check labels of indexes and choose majority
-        return Counter(classes[0]).most_common(1)[0][0]
+        majority = Counter(classes[0]).most_common(1)[0][0]
+        return majority
     
 
     def reduce_instances(self, return_time = False):
+        """Main function in class that uses algorithm ENN on training dataset and create arrays with selected instances and labels 
+
+        Args:
+            return_time (bool, optional): . Defaults to False.
+
+        Returns:
+            end - start (float): algorithm execution time in seconds 
+        """
         print('Dzieje sie magia ENN')
         self.red_data = self.data.data_all_train
         self.red_lab = self.data.data_label_train
@@ -58,38 +90,18 @@ class ENN(_Reduction):
         
         for idx in range(n_instances):
             instance_class = self.red_lab[idx]
-            # if (instance_class != self.find_majority_class_knn(self.red_data[idx], neigh)):
+            # flag instance to remove if it's label disagrees with majority class of k nearest neighbours:
             if instance_class != self.find_majority_class_knn(self.red_lab, self.red_data[idx], neigh):
                 flag_data[idx] = 1
                 remove_id.append(idx)
-                # ne = NearestNeighbors(n_neighbors= 15).fit(self.red_data)
-                # na = KNeighborsClassifier(n_neighbors= 15).fit(self.red_data, self.red_lab)
-                # ide = ne.kneighbors([self.red_data[idx]], return_distance = False)
-                # ida = na.kneighbors([self.red_data[idx]], return_distance = False)
-                # print("ide:")
-                # print(ide)
-                # print(ida)
 
         #remove flaged instances
         self.red_data = np.delete(self.red_data, remove_id, axis = 0)
         self.red_lab = np.delete(self.red_lab, remove_id, axis = 0)
-
-        # self.red_data=np.array(self.red_data)
-        # self.red_lab=np.array(self.red_lab)
-        # for idx in range(n_instances):
-
-            #if (flag_data[idx] == 1):    
-                # self.red_data = np.delete(self.red_data, idx, axis=0)
-                # self.red_lab = np.delete(self.red_lab, idx, axis=0)
-                
-                #TODO test
 
         end = process_time()
 
         if return_time:
             return end - start
 
-        # # return np_red_data, np_red_col
-        # self.red_data = np_red_data
-        # self.red_lab = np_red_data
 

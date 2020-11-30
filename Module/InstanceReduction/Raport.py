@@ -31,6 +31,11 @@ classifiers = {'knn': KNeighborsClassifier(),
 class Raport():
     """Class responsible for creating summary of the classification results for the original and reduced data
     It uses DataPreparation instance and arrays of reduced data and labels for reduced data - _Reduction attributes.
+
+    Attributes:
+        original (DataPreparation): instance representing original data
+        reduced_data (np.ndarray): array with reduced data of training dataset
+        reduced_label (np.ndarray): array with labels for the reduced data of training dataset
     """
 
     def __init__(self, original :DataPreparation, reduced_data: np.ndarray, reduced_label: np.ndarray):

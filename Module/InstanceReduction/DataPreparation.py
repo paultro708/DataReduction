@@ -6,35 +6,60 @@ import os
 from pandas.api.types import is_numeric_dtype
 
 class NotLoadedException(Exception):
-    def __init__(self, message):
+    """Class representing exception when trying to prepare the dataset when the dataset has not yet been loaded
+
+    Args:
+        Exception: exception python class
+    """
+    def __init__(self, message: str):
+        """Constructor of NotLoadedException
+
+        Args:
+            message (str): the message shown when the exception occured
+        """
         self.message = message
 
-def create_path_csv(folder, name):
-        """
-        Function creating string with path of dataset in csv format
-        :folder: folder name
-        :name: name of dataset
-        """
-        return folder + '\\' + name + '.csv'
+# def create_path_csv(folder, name):
+#         """
+#         Function creating string with path of dataset in csv format
+#         :folder: folder name
+#         :name: name of dataset
+#         """
+#         return folder + '\\' + name + '.csv'
 
-#path of folder with datasets in csv format
-datasets_folder = os.path.join(os.path.dirname(os.path.abspath(__file__)), "datasets_csv") # "datasets_csv"
+#path of dir with datasets in csv format
+datasets_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "datasets_csv") # "datasets_csv"
 extension ='.csv'
 
-dataset_path = {"iris": os.path.join(datasets_folder, 'iris'+extension),
-                "glass": os.path.join(datasets_folder, 'glass' + extension),
-                "letter": os.path.join(datasets_folder, 'letter' + extension),
-                "liver": os.path.join(datasets_folder, 'liver'+ extension),
-                "pendigits": os.path.join(datasets_folder, 'pendigits'+ extension),
-                "spambase": os.path.join(datasets_folder, 'spambase'+ extension),
-                "segment": os.path.join(datasets_folder, 'segment'+ extension),
-                "satimage": os.path.join(datasets_folder, 'satimage'+ extension),
-                "yeast": os.path.join(datasets_folder, 'yeast'+ extension)
+dataset_path = {"iris": os.path.join(datasets_dir, 'iris'+extension),
+                "glass": os.path.join(datasets_dir, 'glass' + extension),
+                "letter": os.path.join(datasets_dir, 'letter' + extension),
+                "liver": os.path.join(datasets_dir, 'liver'+ extension),
+                "pendigits": os.path.join(datasets_dir, 'pendigits'+ extension),
+                "spambase": os.path.join(datasets_dir, 'spambase'+ extension),
+                "segment": os.path.join(datasets_dir, 'segment'+ extension),
+                "satimage": os.path.join(datasets_dir, 'satimage'+ extension),
+                "yeast": os.path.join(datasets_dir, 'yeast'+ extension)
                 }
 
 class DataPreparation:
     """
     Class using for loading possible datasets and preparing for reducing algorithms and raports
+
+    Attributes:
+        class_col: column marked as representing as column with labels for decission class. Can be str name of column or integer index.
+        dataset: dataset loaded as pandas data frame. It must have only numerical, non missed values.
+        data_all: numpy array with normalized data without labels
+        data_label: numpy arrray with labels for data
+        features: list with feature names - header without :class_col
+        n_features: count of features
+        n_classes: count of decision classes
+        class_dict (dict): dictionary with class names as keys and mapped integer representation as values
+        data_all_train: part of :data_all representing train subset. It constitute about 0.7 of :data_all. This subset will be used in the reduction process.
+        data_all_test: part of :data_all representing test subset. It constitute about 0.3 of :data_all. This subset will be used for evalueating the classification quality.
+        data_label_train: labels of instances in :data_all_train
+        datat_label_test: labels of instances in :data_all_test
+
     """
 
     def prepare_dataset(self):
@@ -51,7 +76,7 @@ class DataPreparation:
             self.class_dict[label] = i
             i+=1
 
-        # #init array of features
+        #init array of features
         self.n_features = self.data_all.shape[1]
 
         #convert to numpy array
@@ -119,6 +144,7 @@ class DataPreparation:
     
 
     def __init__(self, name:str = None, filepath = None, class_col = 'class', sep = ','):
+        
         # """
         # Initialize dataset
 
@@ -137,6 +163,22 @@ class DataPreparation:
         # """
         """Constructor of DataPreparation. It tries open file with pandas library. 
         After that, loaded dataset is prepared for subsequent actions by calling apriopriate function.
+
+        Args:
+            name (str, optional): name of dataset, one of available:
+                            "iris", 
+                            "glass", 
+                            "letter", 
+                            "liver", 
+                            "pendigits", 
+                            "spambase", 
+                            "segment",
+                            "satimage" or
+                            "yeast".
+                    Default to None. If not given - :filepath should be.
+            filepath (optional): path of file containing selected dataset. Even if given, when :name also is, named dataset will be loaded. Default to None.
+            class_col (oprional): name of column with labels marking decision class. Default to 'class'
+            sep (optional): separator used in dataset file for separating values
 
         Raises:
             TypeError: when type of the given parameter is not apriopriate

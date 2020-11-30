@@ -7,7 +7,7 @@ from ._NNGraph import _NNGraph
 
 class DROP1(_Reduction):
     """
-    Class representing DROP1 algorithm. It reduces especially noise instances.
+    Class representing DROP1 algorithm.
     """
 
     def __init__(self, data: DataPreparation, k: int=3):
@@ -74,17 +74,13 @@ class DROP1(_Reduction):
         #start time measurement
         start = process_time()
 
-        n_instances = len(self.data.data_label_train)
-        ########################
         for i, d in np.ndenumerate(self.red_data): #enumerate(self.red_data[:]):
             n_with = self.__n_classified_correct(i[0], self.k) 
             n_without = self.__n_classified_correct(i[0], self.k+1, i) 
 
+            #remove instance if number of instances classified correctly without this instance is not less than 
+            #number of instances classified correctly with this instance 
             if (n_without >= n_with):
-                """
-                remove instances TODO how
-                """
-
                 self.red_data = np.delete(self.red_data, [i[0]], axis=0)
                 self.red_lab = np.delete(self.red_lab, [i[0]], axis = 0)
                 for j, v in np.ndenumerate(self.red_data):
