@@ -1,7 +1,7 @@
 {
     "python.pythonPath": "d:\\Studia\\inz\\Repos\\envDataReduction\\Scripts\\python.exe",
     "python.testing.pytestArgs": [
-        "Module"
+        "tests"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.nosetestsEnabled": false,
