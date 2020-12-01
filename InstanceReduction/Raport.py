@@ -80,14 +80,23 @@ class Raport():
         idx = self.original.features.index(colx)
         idy = self.original.features.index(coly)
 
+
         #create plots
         for name, obj, col in [('Original dataset', self.original.data_all_train, orig), ('Reduced dataset', self.reduced_data, red)]:
             fig, ax = plt.subplots()
             scatter = ax.scatter(obj[:,idx], obj[:,idy], c = col)
             legend = ax.legend(*scatter.legend_elements(), title="Classes")
             ax.add_artist(legend)
+            
             plt.xlabel(self.original.features[idx])
             plt.ylabel(self.original.features[idy])
+            #set same scale
+            if name == 'Original dataset':
+                bottom_y, top_y = plt.ylim()
+                bottom_x, top_x = plt.xlim()
+            else:
+                plt.xlim(bottom_x, top_x)
+                plt.ylim(bottom_y, top_y)
             plt.title(name)
             if save:
                 if path == None:
