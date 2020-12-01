@@ -1,6 +1,7 @@
 import pytest
 from InstanceReduction.DataPreparation import DataPreparation
 from tests.const import tuples, names, to_large_k
+from InstanceReduction.Reduction.ICF import ICF
 
 # def test_reduction_create(data, reduction_alg):
 #     assert len(reduction_alg.red_lab) == len(data.data_label_train)
@@ -35,6 +36,7 @@ def test_create_wrong_kr(reduction_alg_names, data_preparation_ok, wrong_k_type)
     with pytest.raises(TypeError):
         r = reduction_alg_names(data_preparation_ok, wrong_k_type)
 
+#@pytest.mark.skipif("reduction_alg_names.__class__.__name__ == 'ICF'", reason="does not have this requirement")
 @pytest.mark.parametrize('dataset_name, wrong_k_value', tuples(names, to_large_k))
 def test_create_too_small_kr(reduction_alg_names, dataset_name,wrong_k_value):
     """ Check raising exception when init with wrong value of k parameter"""

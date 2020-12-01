@@ -4,6 +4,7 @@ from InstanceReduction.Reduction.DROP1 import DROP1
 from InstanceReduction.Reduction.ENN import ENN
 from InstanceReduction.Reduction.MSS import MSS
 from InstanceReduction.Reduction.PCS import PCS
+from InstanceReduction.Reduction.ICF import ICF
 """
 File with constant parameters used in tests
 """
@@ -22,7 +23,7 @@ wrong_name_types = [False, True, 0, 12, dict(), set(), tuple(), []]
 wrong_sep_types = [False, True, 0, 12, dict(), set(), tuple(), []]
 
 #parapetres for Reduction classes
-basic_reduction = [ENN, DROP1, MSS, PCS]
+basic_reduction = [ENN, DROP1, MSS, PCS, ICF]
 # k_param_ok = [1, 2, 3, 10, maxk]
 k_praram_wrong = [0, -1, 0.34, 'wrong', False]
 to_large_k = [105, 7695]#, 14000]
