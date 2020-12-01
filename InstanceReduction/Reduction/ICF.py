@@ -1,4 +1,5 @@
 from ._Reduction import _Reduction
+from .ENN import ENN
 from ..DataPreparation import DataPreparation
 from ._NNGraph import _NNGraph
 import numpy as np
@@ -31,8 +32,6 @@ class ICF(_Reduction):
         elif k >= len(self.data.data_all_train):
             raise ValueError('k atribute must have value less than number of instances in dataset')
 
-        self.graph = _NNGraph()
-        self.graph.create_graph(self.data.data_all_train, self.data.data_label_train)
 
     def create_cov_reach(self, index:int)-> list:
         """Function creating coverage subset. Coverage subset contains nearest neighbours with same label, limited by first enemy.
@@ -58,16 +57,22 @@ class ICF(_Reduction):
                 self.reachable[idx].append(index)
 
 
-    def create_reachable():
-        pass
-
     def reduce_instances(self, return_time = False):
         print('Reducing the dataset using the ICF algorithm...')
-        self.red_data = self.data.data_all_train
-        self.red_lab = self.data.data_label_train
+
+        #apply ENN algorith first
+        enn = ENN(self.data)
+        enn.reduce_instances()
+        #init reduced data and labels
+        self.red_data = enn.red_data
+        self.red_lab = enn.red_lab
 
         #start time measurement
         start = process_time()
+
+        #create graph for get information about neighbours and enemies
+        self.graph = _NNGraph()
+        self.graph.create_graph(self.red_data, self.red_lab)
         
         #do algorithm
         progress = True
@@ -89,6 +94,8 @@ class ICF(_Reduction):
             #init arrays for keeping instances
             keep = np.ones((self.red_lab.shape))
             
+            #recreate graph
+            self.graph.create_graph(self.red_data, self.red_lab)
             #init coverage and reachable subset
             self.coverage = []
             self.reachable = []
