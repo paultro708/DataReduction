@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import normalize
+# from sklearn.preprocessing import normalize
 import os
 from pandas.api.types import is_numeric_dtype
 
@@ -61,13 +61,48 @@ class DataPreparation:
         datat_label_test: labels of instances in :data_all_test
 
     """
+    @staticmethod
+    def normalize(array: np.ndarray):
+        """Function normalizes numpy array.
+
+        Args:
+            array (np.ndarray): array to normalize
+
+        Returns:
+            normalized (np.ndarray): normalized :array
+            weights (np.ndarray): weights of normalization
+        """
+        normalized = np.copy(array)
+        weights = np.ones(array.shape[1])
+        for i in range(len(weights)):
+            weights[i] = np.sqrt(sum(normalized[i]**2))
+        for i in range(len(weights)): 
+            normalized[:,i] /= weights[i]
+        return normalized, weights
+
+    @staticmethod
+    def reverse_normalize(array: np.ndarray, weights: np.ndarray):
+        """Function reverse normalizes numpy array - back to values before normalization
+
+        Raises:
+            Exception: when number of weights and columns does not agree
+
+        Returns:
+            (np.ndarray): array with values before normalization
+        """
+        if array.shape[1] != len(weights):
+            raise Exception('Number of weights does not agree with shape[1] of array')
+        arr_before = array
+        for i in range(len(weights)): 
+            arr_before[:,i] *= weights[i]
+        return arr_before
 
     def prepare_dataset(self):
         """
         Function preparing dataset for reduction - getting out metadata and split dataset to train and test subsets.
         """
-        #normalize data
-        self.data_all = normalize(self.data_all)
+        # #normalize data
+        # self.data_all = normalize(self.data_all)
 
         #map labels to 0-n indexes
         self.class_dict = dict()
@@ -145,22 +180,6 @@ class DataPreparation:
 
     def __init__(self, name:str = None, filepath = None, class_col = 'class', sep = ','):
         
-        # """
-        # Initialize dataset
-
-        # :name: name of dataset - one of: 
-        #         "iris", 
-        #         "glass", 
-        #         "letter", 
-        #         "liver", 
-        #         "pendigits", 
-        #         "spambase", 
-        #         "segment",
-        #         "satimage" or
-        #         "yeast"
-
-        # filepath - absolute path of file or relative path of file to working directory
-        # """
         """Constructor of DataPreparation. It tries open file with pandas library. 
         After that, loaded dataset is prepared for subsequent actions by calling apriopriate function.
 

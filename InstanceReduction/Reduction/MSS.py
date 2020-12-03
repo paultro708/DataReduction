@@ -10,7 +10,7 @@ from time import process_time
 
 class MSS(_Reduction):
     """
-    Class representing ENN algorithm. It reduces especially noise instances.
+    Class representing MSS algorithm. TODO docstrings
     """
 
     def __init__(self, data: DataPreparation, k: int=3):
@@ -50,16 +50,16 @@ class MSS(_Reduction):
 
         return neigh, enemy
 
-    def prepare_reduced(self):
-        red = []
-        lab = []
-        # for i in range(len(self.red_lab)):
-        #     red.append(self.red_lab[i].tolist())
-            #lab.append(self.red_lab[i].tolist())
-        for i in self.red_data:
-            red.append(i.tolist())
-        self.red_lab = np.array(self.red_lab)
-        self.red_data = np.array(self.red_data)
+    # def prepare_reduced(self):
+    #     red = []
+    #     lab = []
+    #     # for i in range(len(self.red_lab)):
+    #     #     red.append(self.red_lab[i].tolist())
+    #         #lab.append(self.red_lab[i].tolist())
+    #     for i in self.red_data:
+    #         red.append(i.tolist())
+    #     self.red_lab = np.array(self.red_lab)
+    #     self.red_data = np.array(self.red_data)
 
 
 
@@ -67,8 +67,11 @@ class MSS(_Reduction):
         print('Reducing the dataset using the MSS algorithm...')
         start = process_time()
         ################
+        #normalization for create distance array
+        self.train =  self.data.normalize(self.data.data_all_train)[0]
+        
         #create 2d array for dataset with distances between pairs 
-        dist_arr = distance.cdist(self.data.data_all_train, self.data.data_all_train)
+        dist_arr = distance.cdist(self.train, self.train)
         n_ins = len(self.data.data_all_train)
         tmp = np.arange(n_ins) #array of original indexes
         nearest_enemy = []
@@ -99,11 +102,9 @@ class MSS(_Reduction):
             if add and i not in added:
                 self.red_data.append(self.data.data_all_train[i])
                 self.red_lab.append(self.data.data_label_train[i])
-                # self.red_data = np.append(self.red_data, self.data.data_all_train[i])
-                # self.red_lab = np.append(self.red_lab, self.data.data_label_train[i])
                 added.append(i)
 
-        self.prepare_reduced()
+        super().prepare_reduced(self)
         ################
         end = process_time()
 

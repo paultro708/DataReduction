@@ -15,7 +15,12 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import cohen_kappa_score
 from sklearn.metrics import classification_report 
 import os
+from sklearn.preprocessing import normalize
+# from time import process_time
 import time
+import warnings
+
+warnings.filterwarnings('ignore')
 
 classifiers = {'knn': KNeighborsClassifier(), 
                 'svm': svm.SVC(), 
@@ -137,7 +142,7 @@ class Raport():
         if show:
             plt.show()
 
-    def raport(self, original_set, original_labels, reduced_set, reduced_labels, test_set, test_labels, c_type, show_cf_matrix :bool, path, save_cf_matrix: bool):
+    def raport(self, original_set, original_labels, reduced_set, reduced_labels, test_set, test_labels, c_type, show_cf_matrix :bool, path, save_cf_matrix: bool, norm: bool):
         """Main function in Raport class. It is responsible for :
         - classify with original and reduced dataset,  
         - printing results of classification quality
@@ -164,11 +169,17 @@ class Raport():
         else:
             if c_type == 'all':
                 for c_t in classifiers:
-                    self.raport(original_set, original_labels, reduced_set, reduced_labels, test_set, test_labels, c_t,  show_cf_matrix, path, save_cf_matrix)
+                    self.raport(original_set, original_labels, reduced_set, reduced_labels, test_set, test_labels, c_t, show_cf_matrix, path, save_cf_matrix, norm)
 
             else:
                 #select classifier
                 classifier = classifiers[c_type]
+
+                #normalize data:
+                if norm:
+                    original_set = normalize(original_set)
+                    reduced_set = normalize(reduced_set)
+                
                 #train with original dataset and time measure
                 start = time.clock()
                 classifier.fit(original_set, original_labels)
@@ -227,7 +238,7 @@ class Raport():
                 print('===')
 
 
-    def print_raport(self, c_type= 'all', show_cf_matrix = True, path = None, save_cf_matrix = False):
+    def print_raport(self, c_type= 'all', show_cf_matrix = True, path = None, save_cf_matrix = False, norm = False):
         
         """Function responssible for call function printing raport with apriopriate arguments. 
 
@@ -252,4 +263,5 @@ class Raport():
                     c_type,
                     show_cf_matrix,
                     path,
-                    save_cf_matrix)
+                    save_cf_matrix,
+                    norm)

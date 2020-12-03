@@ -1,6 +1,5 @@
-__pycache__
-.idea
-.pytest_cache
-.vscode
-InstanceReduction/__pycache__
-tests/__pycache__
+htmlcov/
+plots/
+.*
+__pycache__/
+.pytest_cache/

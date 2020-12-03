@@ -74,9 +74,13 @@ class ENN(_Reduction):
             end - start (float): algorithm execution time in seconds 
         """
         print('Reducing the dataset using the ENN algorithm...')
-        self.red_data = self.data.data_all_train
-        self.red_lab = self.data.data_label_train
+        #start time measurement
         start = process_time()
+
+        #init with normalized data
+        self.red_data, self.weights = self.data.normalize(self.data.data_all_train)
+        self.red_lab = self.data.data_label_train
+
         n_instances = len(self.data.data_label_train)
 
         #create array with zeros, ones will be represent instances to remove
@@ -99,6 +103,9 @@ class ENN(_Reduction):
         self.red_data = np.delete(self.red_data, remove_id, axis = 0)
         self.red_lab = np.delete(self.red_lab, remove_id, axis = 0)
 
+        #reverse normalize:
+        self.red_data = self.data.reverse_normalize(self.red_data, self.weights)
+        
         end = process_time()
 
         if return_time:

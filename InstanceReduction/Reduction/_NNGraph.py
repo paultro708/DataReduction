@@ -4,7 +4,7 @@ from scipy.spatial import distance
 
 class _NNGraph:
     """
-    Class representing neigbourhood 
+    Class representing neigbourhood. TODO docstrings
     """
 
     # def __init__(self, data):

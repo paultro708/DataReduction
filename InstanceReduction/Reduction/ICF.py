@@ -122,6 +122,9 @@ class ICF(_Reduction):
         self.red_data = enn.red_data
         self.red_lab = enn.red_lab
 
+        #normalize data
+        self.red_data, self.weights = self.data.normalize(self.red_data)
+
         #create graph to get information about neighbours and enemies
         self.graph = _NNGraph()
 
@@ -149,6 +152,9 @@ class ICF(_Reduction):
             if (progress and iteration < self.max_iter):
                 self._init_params()
             iteration +=1
+
+        #reverse normaize
+        self.red_data = self.data.reverse_normalize(self.red_data, self.weights)
 
         #end time measurement
         end = process_time()

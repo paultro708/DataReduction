@@ -59,8 +59,7 @@ class PCS(_Reduction):
     @staticmethod
     def find_id_of_nearest_point(data_all, indexes, point):
         """
-        Function finding index of point in data, nearest to given point. Using for find nerest point of mean in homogeniuos cluster 
-        TODO czy ma zwracać kilka indesów jeżeli takie same odległosci?
+        Function finding index of point in data, nearest to given point. Using for find nerest point of mean in homogeniuos cluster
         """
         # id of nearest, for now the first
         id = indexes[0]
@@ -121,7 +120,6 @@ class PCS(_Reduction):
         Function calculating mean point in cluster.
         data_all - training dataset
         indexes - array of indexes of cluster form training dataset
-        TODO: ZeroDivisionException
         """
         count_of_values = len(indexes)
         if count_of_values == 0:
@@ -239,15 +237,15 @@ class PCS(_Reduction):
                     self.data.n_classes, classes_with_indexes)
                 # find mean point in cluster
                 mean_point = self.mean_point_in_cluster(
-                    data_all=self.data.data_all_train, indexes=clusters_with_id[i])
+                    data_all=self.train, indexes=clusters_with_id[i])
                 # print(mean_point)
                 # find index of intance located in cluster nearest to mean point
                 accept_id = self.find_id_of_nearest_point(
-                    data_all=self.data.data_all_train, indexes=clusters_with_id[i], point=mean_point)
+                    data_all=self.train, indexes=clusters_with_id[i], point=mean_point)
                 # print(accept_id)
 
                 # add instance within the class 9to reduced set
-                reduced_set[cm].append(self.data.data_all_train[accept_id])
+                reduced_set[cm].append(self.train[accept_id])
 
             else:
                 # majority class in cluster
@@ -263,15 +261,15 @@ class PCS(_Reduction):
                     for el in classes_with_indexes[class_id]:
                         # nearest form majority class
                         nearest_of_majority_class = self.find_nearest_instance(
-                            element=el, indexes_of_data=classes_with_indexes[cm], data_all=self.data.data_all_train)
+                            element=el, indexes_of_data=classes_with_indexes[cm], data_all=self.train)
                         reduced_set[cm].append(
-                            self.data.data_all_train[nearest_of_majority_class])
+                            self.train[nearest_of_majority_class])
                         # nearest from belonging class
                         nearest_of_actual_class = self.find_nearest_instance(
-                            element=el, indexes_of_data=classes_with_indexes[class_id], data_all=self.data.data_all_train)
+                            element=el, indexes_of_data=classes_with_indexes[class_id], data_all=self.train)
                         # reduced_set = np.append(reduced_set, data_all_train[nearest_of_actual_class])
                         reduced_set[cm].append(
-                            self.data.data_all_train[nearest_of_actual_class])
+                            self.train[nearest_of_actual_class])
 
             # reset array
             classes_with_indexes = []
@@ -284,22 +282,23 @@ class PCS(_Reduction):
     def reduce_instances(self, return_time = False):
         print('Reducing with PCS algorithm ...')
         start = process_time()
+
+        #normalize data
+        self.train, self.weights = self.data.normalize(self.data.data_all_train)
+
         # create clusters
-        clusters = self.create_clusters(data = self.data.data_all_train, number_of_clusters = self.n_clusters)
+        clusters = self.create_clusters(data = self.train, number_of_clusters = self.n_clusters)
+
         #group clusters 
         clusters_with_id = self.group_id_by_cluster(clusters)
-        np_red_data, np_red_col = self.clustering_reduction(clusters_with_id, self.data.data_all_train)
-        # return np_red_data, np_red_col
-        self.red_data = np_red_data
-        self.red_lab = np_red_col
+
+        #apply main part of algorithm
+        self.red_data, self.red_lab = self.clustering_reduction(clusters_with_id, self.train)
+
+        # reverse normalize 
+        self.red_data = self.data.reverse_normalize(self.red_data, self.weights)
+
         end = process_time()
         if return_time:
             return end - start
         
-
-if __name__ == "__main__":
-
-    data = DataPreparation("iris")
-    reduction = PCS(data)#(data,20)
-    # raport = Raport(data, reduction.red_data, reduction.red_lab)
-    # raport.print_raport()

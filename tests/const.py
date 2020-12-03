@@ -5,6 +5,7 @@ from InstanceReduction.Reduction.ENN import ENN
 from InstanceReduction.Reduction.MSS import MSS
 from InstanceReduction.Reduction.PCS import PCS
 from InstanceReduction.Reduction.ICF import ICF
+import pytest
 """
 File with constant parameters used in tests
 """

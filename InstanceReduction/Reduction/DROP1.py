@@ -4,10 +4,11 @@ import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from time import process_time
 from ._NNGraph import _NNGraph
+from sklearn.preprocessing import Normalizer
 
 class DROP1(_Reduction):
     """
-    Class representing DROP1 algorithm.
+    Class representing DROP1 algorithm. TODO docstrings
     """
 
     def __init__(self, data: DataPreparation, k: int=3):
@@ -24,7 +25,8 @@ class DROP1(_Reduction):
         self.red_data = []
         self.red_lab = []
         self.graph = _NNGraph()
-        self.graph.create_graph(self.data.data_all_train, self.data.data_label_train)
+        norm, self.weights = self.data.normalize(self.data.data_all_train)
+        self.graph.create_graph(norm, self.data.data_label_train)
 
     @staticmethod
     def find_data_and_labels(tab, dataset, labelset):
@@ -65,7 +67,10 @@ class DROP1(_Reduction):
 
     def reduce_instances(self, return_time = False):
         print('Reducing the dataset using the DROP1 algorithm...')
-        self.red_data = self.data.data_all_train
+        # weights = np.sqrt(sum(self.data.data_all_train**2))
+        self.red_data = self.data.normalize(self.data.data_all_train)[0] #self.data.data_all_train / weights
+
+        # self.red_data = self.data.data_all_train
         self.red_lab = self.data.data_label_train
 
         #start time measurement
@@ -87,7 +92,9 @@ class DROP1(_Reduction):
                     if i[0] in self.graph.neigh[j[0]]:
                         self.graph.neigh[j[0]].remove(i[0]) #delete from neighbours
 
-
+        
+        self.red_data = self.data.reverse_normalize(self.red_data, self.weights)
+        # super().prepare_reduced(self)
         #end time measurement
         end = process_time()
 
