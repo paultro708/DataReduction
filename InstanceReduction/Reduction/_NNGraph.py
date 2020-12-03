@@ -70,11 +70,14 @@ class _NNGraph:
 
 
 
-    def create_graph(self, data, labels):
+    def create_graph(self, data, labels, k = None):
         
         #create 2d array for dataset with distances between pairs 
         self.dist_arr = distance.cdist(data, data)
         n_ins = len(data)
+
+        if k == None:
+            k = n_ins
 
         # #init arrays
         self.sort = []
@@ -92,8 +95,8 @@ class _NNGraph:
 
             # #create sorted array with indexes of neighbours with same label and enemies - with different label
             n, e = self.group_neigh_enemies(labels, i, self.sort_id[i])
-            self.neigh.append(n)
-            self.enemy.append(e)
+            self.neigh.append(n[1:k+1])
+            self.enemy.append(e[:k])
             
             #add i to assotiates:
             for n in self.neigh[i]:

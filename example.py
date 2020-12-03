@@ -6,7 +6,7 @@ from InstanceReduction.Reduction.MSS import MSS
 from InstanceReduction.Reduction.ICF import ICF
 
 data = DataPreparation('iris')#filepath="D:\Studia\inz\datasets_csv\glass.csv", class_col='Type')#'iris')
-alg = ENN(data, 3)
+alg = DROP1(data, 3)
 print(alg.reduce_instances(return_time=True))
 
 from InstanceReduction.Raport import Raport

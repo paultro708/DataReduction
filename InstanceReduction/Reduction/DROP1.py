@@ -24,10 +24,6 @@ class DROP1(_Reduction):
             raise ValueError('k atribute must have value less than number of instances in dataset')
         self.red_data = []
         self.red_lab = []
-        self.graph = _NNGraph()
-        norm, self.weights = self.data.normalize(self.data.data_all_train)
-        self.graph.create_graph(norm, self.data.data_label_train)
-
     @staticmethod
     def find_data_and_labels(tab, dataset, labelset):
         """
@@ -68,13 +64,16 @@ class DROP1(_Reduction):
     def reduce_instances(self, return_time = False):
         print('Reducing the dataset using the DROP1 algorithm...')
         # weights = np.sqrt(sum(self.data.data_all_train**2))
-        self.red_data = self.data.normalize(self.data.data_all_train)[0] #self.data.data_all_train / weights
+        
+        #start time measurement
+        start = process_time()
+        self.graph = _NNGraph()
+        self.red_data, self.weights = self.data.normalize(self.data.data_all_train)
+        self.graph.create_graph(self.red_data, self.data.data_label_train)
 
         # self.red_data = self.data.data_all_train
         self.red_lab = self.data.data_label_train
 
-        #start time measurement
-        start = process_time()
 
         for i, d in np.ndenumerate(self.red_data): #enumerate(self.red_data[:]):
             n_with = self.__n_classified_correct(i[0], self.k) 
@@ -100,9 +99,3 @@ class DROP1(_Reduction):
 
         if return_time:
             return end - start
-
-
-
-        
-
-
