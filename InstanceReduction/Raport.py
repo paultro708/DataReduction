@@ -14,10 +14,12 @@ from sklearn.neural_network import MLPClassifier
 
 from sklearn.metrics import cohen_kappa_score
 from sklearn.metrics import classification_report 
+from sklearn.metrics import accuracy_score 
 import os
 from sklearn.preprocessing import normalize
 # from time import process_time
 import time
+import pandas as pd
 import warnings
 
 warnings.filterwarnings('ignore')
@@ -164,6 +166,7 @@ class Raport():
         Raises:
             Exception: when given value classifier type not exist in dictionary of available types
         """
+        fr = pd.DataFrame(columns=['classifier', 'accuracy', 'kappa', 'training_time', 'predicting_time' ])
         if (c_type !='all') and (c_type not in classifiers):
             raise Exception("Classifier type not exist in available set!")
         else:
@@ -203,7 +206,7 @@ class Raport():
                 print('=============')
                 print("Raport for original dataset")
                 print('Count of instances: ', len(original_labels))
-                print(classification_report(test_labels, predict)) 
+                print(classification_report(test_labels, predict, digits=4)) 
                 print("Cohen's Kappa: {:.2f}".format(cohen_kappa_score(test_labels, predict)))
                 print('===')
                 print("Training time: ", training_time)
@@ -229,13 +232,21 @@ class Raport():
 
                 print("\nRaport for reduced dataset")
                 print('Count of instances: ', len(reduced_labels))
-                print(classification_report(test_labels, predict))
+                print(classification_report(test_labels, predict, digits = 4))
                 print("Cohen's Kappa: {:.2f}".format(cohen_kappa_score(test_labels, predict)))
                 print('===')
                 print("Training time: ", training_time)
                 print("Predicting time: ", prediction_time, "\n")
                 print('Reduction factor: {:.2f} %'.format((len(original_labels) - len(reduced_labels))/len(original_labels)*100))
                 print('===')
+                row = pd.Series([c_type, 
+                                    accuracy_score(test_labels, predict),
+                                    cohen_kappa_score(test_labels, predict),
+                                    training_time, prediction_time
+                                    ])
+                fr = fr.append(row, ignore_index = True)
+                fr.to_csv("D:\\Studia\\inz\\Repos\\DataReduction\\results\\score.csv", mode='a', header = False, sep=';')
+        
 
 
     def print_raport(self, c_type= 'all', show_cf_matrix = True, path = None, save_cf_matrix = False, norm = False):

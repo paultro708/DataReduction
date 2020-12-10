@@ -24,6 +24,7 @@ class DROP1(_Reduction):
             raise ValueError('k atribute must have value less than number of instances in dataset')
         self.red_data = []
         self.red_lab = []
+
     @staticmethod
     def find_data_and_labels(tab, dataset, labelset):
         """
@@ -67,9 +68,10 @@ class DROP1(_Reduction):
         
         #start time measurement
         start = process_time()
+        
         self.graph = _NNGraph()
         self.red_data, self.weights = self.data.normalize(self.data.data_all_train)
-        self.graph.create_graph(self.red_data, self.data.data_label_train)
+        self.graph.create_graph(self.red_data, self.data.data_label_train, self.k+1)
 
         # self.red_data = self.data.data_all_train
         self.red_lab = self.data.data_label_train

@@ -38,7 +38,7 @@ class PCS(_Reduction):
 
         # creating clusters using k-means algorithm
         # AgglomerativeClustering(n_clusters=number_of_clusters)#
-        clust = KMeans(n_clusters=number_of_clusters)
+        clust = KMeans(n_clusters=number_of_clusters, random_state=42)
         clust.fit(data)
 
         return clust.labels_

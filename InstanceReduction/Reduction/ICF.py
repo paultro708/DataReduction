@@ -79,7 +79,7 @@ class ICF(_Reduction):
         self.keep = np.ones((self.red_lab.shape))
             
         #create graph to get information about neighbours and enemies for each instance 
-        self.graph.create_graph(self.red_data, self.red_lab)  
+        self.graph.create_graph(self.red_data, self.red_lab, n_enem=True)  
 
         #init coverage and reachable subset
         self.coverage = []

@@ -24,7 +24,6 @@ class _NNGraph:
         """
 
         for l in [labels, sort]:
-            x = type(l)
             if type(l) == np.ndarray and (l.ndim != 1 or l.size == 0):
                 raise ValueError('\'{}\' must be 1d not empty numpy array'.format(l))
             elif type(l) == list and len(l) == 0:
@@ -70,7 +69,7 @@ class _NNGraph:
 
 
 
-    def create_graph(self, data, labels, k = None):
+    def create_graph(self, data, labels, k = None, n_enem = False):
         
         #create 2d array for dataset with distances between pairs 
         self.dist_arr = distance.cdist(data, data)
@@ -88,15 +87,19 @@ class _NNGraph:
 
         for i in range(n_ins):
             self.assot.append([])
-        #create array with indexes of nearest enemy
-        for i in range(n_ins):
+            #create array with indexes of nearest enemy
             # #sort by distance
             self.sort_id.append(np.argsort(self.dist_arr[i]))
 
+        for i in range(n_ins):
             # #create sorted array with indexes of neighbours with same label and enemies - with different label
-            n, e = self.group_neigh_enemies(labels, i, self.sort_id[i])
-            self.neigh.append(n[1:k+1])
-            self.enemy.append(e[:k])
+            n, e = self.group_neigh_enemies(labels, i, self.sort_id[i][:k+1])
+            if n_enem:
+                self.enemy.append(e[:3])
+                self.neigh.append(n[1:(e[0]+1)])
+            else:
+                self.neigh.append(n[1:k+1])
+                self.enemy.append(e[:k])
             
             #add i to assotiates:
             for n in self.neigh[i]:

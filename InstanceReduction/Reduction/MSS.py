@@ -67,6 +67,8 @@ class MSS(_Reduction):
         print('Reducing the dataset using the MSS algorithm...')
         start = process_time()
         ################
+        self.red_data = []
+        self.red_lab = []
         #normalization for create distance array
         self.train =  self.data.normalize(self.data.data_all_train)[0]
         

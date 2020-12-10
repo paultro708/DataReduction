@@ -39,6 +39,7 @@ dataset_path = {"iris": os.path.join(datasets_dir, 'iris'+extension),
                 "spambase": os.path.join(datasets_dir, 'spambase'+ extension),
                 "segment": os.path.join(datasets_dir, 'segment'+ extension),
                 "satimage": os.path.join(datasets_dir, 'satimage'+ extension),
+                "shuttle": os.path.join(datasets_dir, 'shuttle_training'+ extension),
                 "yeast": os.path.join(datasets_dir, 'yeast'+ extension)
                 }
 
@@ -72,7 +73,7 @@ class DataPreparation:
             normalized (np.ndarray): normalized :array
             weights (np.ndarray): weights of normalization
         """
-        normalized = np.copy(array)
+        normalized = np.copy(array).astype('float64')
         weights = np.ones(array.shape[1])
         for i in range(len(weights)):
             weights[i] = np.sqrt(sum(normalized[i]**2))
@@ -119,7 +120,10 @@ class DataPreparation:
         self.data_label = np.array(self.data_label)
 
         #split data into train and test
-        self.data_all_train, self.data_all_test, self.data_label_train, self.data_label_test = train_test_split(self.data_all, self.data_label, test_size=0.3)
+        self.data_all_train, self.data_all_test, self.data_label_train, self.data_label_test = train_test_split(self.data_all, 
+                                                                                                                self.data_label, 
+                                                                                                                test_size=0.3,
+                                                                                                                random_state = 42)
         
         #init number of classes
         self.n_classes = len(set(self.data_label))
