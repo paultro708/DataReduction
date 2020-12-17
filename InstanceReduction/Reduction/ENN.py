@@ -46,7 +46,7 @@ class ENN(_Reduction):
             raise ValueError('k atribute must have value less than number of instances in dataset')
 
     @staticmethod
-    def find_majority_class_knn(red_lab, point, neigh):
+    def _find_majority_class_knn(red_lab, point, neigh):
         """Function for k nearest neighbors check the majority class and returns it
 
         Args:
@@ -98,7 +98,7 @@ class ENN(_Reduction):
         for idx in range(n_instances):
             instance_class = self.red_lab[idx]
             # flag instance to remove if it's label disagrees with majority class of k nearest neighbours:
-            if instance_class != self.find_majority_class_knn(self.red_lab, self.red_data[idx], neigh):
+            if instance_class != self._find_majority_class_knn(self.red_lab, self.red_data[idx], neigh):
                 flag_data[idx] = 1
                 remove_id.append(idx)
 

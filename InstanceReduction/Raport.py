@@ -144,7 +144,7 @@ class Raport():
         if show:
             plt.show()
 
-    def raport(self, original_set, original_labels, reduced_set, reduced_labels, test_set, test_labels, c_type, show_cf_matrix :bool, path, save_cf_matrix: bool, norm: bool):
+    def _raport(self, original_set, original_labels, reduced_set, reduced_labels, test_set, test_labels, c_type, show_cf_matrix :bool, path, save_cf_matrix: bool, norm: bool):
         """Main function in Raport class. It is responsible for :
         - classify with original and reduced dataset,  
         - printing results of classification quality
@@ -166,13 +166,12 @@ class Raport():
         Raises:
             Exception: when given value classifier type not exist in dictionary of available types
         """
-        fr = pd.DataFrame(columns=['classifier', 'accuracy', 'kappa', 'training_time', 'predicting_time' ])
         if (c_type !='all') and (c_type not in classifiers):
             raise Exception("Classifier type not exist in available set!")
         else:
             if c_type == 'all':
                 for c_t in classifiers:
-                    self.raport(original_set, original_labels, reduced_set, reduced_labels, test_set, test_labels, c_t, show_cf_matrix, path, save_cf_matrix, norm)
+                    self._raport(original_set, original_labels, reduced_set, reduced_labels, test_set, test_labels, c_t, show_cf_matrix, path, save_cf_matrix, norm)
 
             else:
                 #select classifier
@@ -244,8 +243,6 @@ class Raport():
                                     cohen_kappa_score(test_labels, predict),
                                     training_time, prediction_time
                                     ])
-                fr = fr.append(row, ignore_index = True)
-                fr.to_csv("D:\\Studia\\inz\\Repos\\DataReduction\\results\\score.csv", mode='a', header = False, sep=';')
         
 
 
@@ -265,7 +262,7 @@ class Raport():
             path (optional): Path for saving created confusion matrices. Defaults to None.
             save_cf_matrix (bool, optional): Parameter for saving created confusion matrices. Defaults to False.
         """
-        self.raport(self.original.data_all_train, 
+        self._raport(self.original.data_all_train, 
                     self.original.data_label_train, 
                     self.reduced_data, 
                     self.reduced_label, 

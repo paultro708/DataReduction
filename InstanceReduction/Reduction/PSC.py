@@ -247,7 +247,7 @@ class PSC(_Reduction):
 
         return is_homogeniuos
 
-    def prepare_reduced_set(self, reduced_set):
+    def _prepare_reduced_set(self, reduced_set):
         """
         Function prepare reduced dataset grouped by label for using in classificators
 
@@ -271,7 +271,7 @@ class PSC(_Reduction):
 
         return np_red_data, np_red_label
 
-    def clustering_reduction(self, clusters_with_id, data_all_train):
+    def _clustering_reduction(self, clusters_with_id, data_all_train):
         """
         The main function of PSC, applying algoritm
 
@@ -347,7 +347,7 @@ class PSC(_Reduction):
             for j in range(self.data.n_classes):
                 classes_with_indexes.append([])
 
-        np_red_data, np_red_col = self.prepare_reduced_set(reduced_set)
+        np_red_data, np_red_col = self._prepare_reduced_set(reduced_set)
         return np_red_data, np_red_col
 
     def reduce_instances(self, return_time = False):
@@ -371,7 +371,7 @@ class PSC(_Reduction):
         clusters_with_id = self.group_id_by_cluster(clusters)
 
         # apply main part of algorithm
-        self.red_data, self.red_lab = self.clustering_reduction(clusters_with_id, self.train)
+        self.red_data, self.red_lab = self._clustering_reduction(clusters_with_id, self.train)
 
         # reverse normalize 
         self.red_data = self.data.reverse_normalize(self.red_data, self.weights)
