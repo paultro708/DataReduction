@@ -28,7 +28,7 @@ class ICF(_Reduction):
         """Constructor of ICF class. 
 
         Args:
-            data (DataPreparation): instance of :DataPreparation class containing prepared dataset for ENN alhorithm application
+            data (DataPreparation): instance of :DataPreparation: class containing prepared dataset for ENN alhorithm application
             max_iter (int): maximal number of performed interations
 
         Raises:
@@ -110,6 +110,16 @@ class ICF(_Reduction):
             return False
     
     def reduce_instances(self, return_time = False, return_n_iter = False):
+        """Main function in class reducing instances woth MSS algoritm.
+
+        Args:
+            return_time (bool, optional): if True retuns processing time in seconds. Defaults to False.
+            return_n_iter (bool, optional): if True returns count of iterations. Defaults to False.
+
+        Returns:
+            float: processing time in seconds if :return_time: is True
+            int: count of iterations
+        """
         print('Reducing the dataset using the ICF algorithm...')
         #start time measurement
         start = process_time()
@@ -143,15 +153,20 @@ class ICF(_Reduction):
                     #mark the instance as removal
                     self.keep[idx] = 0 
                     progress = True
+
             
             #delete marked instances or break the loop if it is not possible 
             if self._delete_marked() is False:
                 break
-
+            iteration +=1
+            
             #if there will be another iteration, reinitialize all parametres: keep, coverage and reachable
             if (progress and iteration < self.max_iter):
-                self._init_params()
-            iteration +=1
+                try:
+                    self._init_params()
+                except MemoryError:
+                    break
+            
 
         #reverse normaize
         self.red_data = self.data.reverse_normalize(self.red_data, self.weights)
@@ -162,8 +177,8 @@ class ICF(_Reduction):
 
         #return apriopriate value/values
         if return_time and return_n_iter:
-            return time, iteration+1
+            return time, iteration
         elif return_time:
             return time
         elif return_n_iter:
-            return iteration+1
+            return iteration

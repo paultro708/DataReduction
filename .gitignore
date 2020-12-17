@@ -1,5 +1,13 @@
 htmlcov/
 plots/
 .*
-__pycache__/
-.pytest_cache/
+**/__pycache__/
+results/
+nomao.ipynb
+example.ipynb
+sh.ipynb
+svhn.ipynb
+icf_example.ipynb
+results/Wyniki.xlsx
+.coverage/
+las.ipynb

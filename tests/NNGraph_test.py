@@ -2,6 +2,7 @@ import pytest
 import numpy as np
 from InstanceReduction.Reduction._NNGraph import _NNGraph
 from InstanceReduction.DataPreparation import DataPreparation
+from array import *
 #test static method group_neigh_enemies
 
 @pytest.fixture
@@ -33,7 +34,7 @@ def test_group_n_e_ok(labels, index, sort):
     #enemy: [2,1,0,3,7,9,8]
     """
     gr = _NNGraph()
-    assert gr.group_neigh_enemies(labels, index, sort) == ([4,6,5],[2,1,0,3,7,9,8])
+    assert gr.group_neigh_enemies(labels, index, sort) == (array('I',[4,6,5]),array('I',[2,1,0,3,7,9,8]))
 
 wrong_types_lis = [0, (-3.4), -1, 'vf', False, None]
 @pytest.mark.parametrize('wrong_types', wrong_types_lis)

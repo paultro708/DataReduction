@@ -10,10 +10,31 @@ from time import process_time
 
 class MSS(_Reduction):
     """
-    Class representing MSS algorithm. TODO docstrings
+    Class representing Modified Selective Subset algorithm. It selects all instances that is nearest to different class than same. 
+    It starts with indexes sorted by distance of nearest enemy.
+
+    Args:
+        _Reduction: abstract class of reduction algorithm
+
+    Attributes:
+        data (DataPreparation): DataPreparation instance with original dataset 
+        red_data: reduced dataset
+        red_lab: labels of reduced dataset
+        k (int):parameter for k nearest neighbourhood
+        train: training normalized datased
     """
 
     def __init__(self, data: DataPreparation, k: int=3):
+        """Initialization if MSS algorithm.
+
+        Args:
+            data (DataPreparation): instance of prepared dataset
+            k (int, optional): count of nearest neighbours. Defaults to 3.
+
+        Raises:
+            TypeError: if type of parameter is not apriopriate
+            ValueError: if value of :k: is less than 1 or grater than number of instances in dataset 
+        """
         if not isinstance(data, DataPreparation):
             raise TypeError('Atribute \'data\' must be DataPreparation instance')
         self.data = data
@@ -28,9 +49,8 @@ class MSS(_Reduction):
         self.red_lab = []
 
     @staticmethod
-    def group_neigh_enemies(labels, index, sort):
-        """
-        Function grouping indexes of points with same label and enemies - points with different label.
+    def group_neigh_enemies(labels, index:int, sort):
+        """Function grouping indexes of points with same label and enemies - points with different label.
         Atributes:
         :labels: - array of label for each point in dataset
         :index: - index of point
@@ -38,6 +58,15 @@ class MSS(_Reduction):
         Return arrays:
         :neigh: - array of points with same label as point with :index:
         :enemy: - array of points with diferent label than point with :index:
+
+        Args:
+            labels: array with labels of instances in dataset
+            index (int): index of instance
+            sort: array of indexes sorted by distance
+
+        Returns:
+            list: list of indexes with neighbours sorted by distance
+            ist: list of indexes with enemies sorted by distance
         """
         #init empty arrays
         neigh = []
@@ -50,26 +79,22 @@ class MSS(_Reduction):
 
         return neigh, enemy
 
-    # def prepare_reduced(self):
-    #     red = []
-    #     lab = []
-    #     # for i in range(len(self.red_lab)):
-    #     #     red.append(self.red_lab[i].tolist())
-    #         #lab.append(self.red_lab[i].tolist())
-    #     for i in self.red_data:
-    #         red.append(i.tolist())
-    #     self.red_lab = np.array(self.red_lab)
-    #     self.red_data = np.array(self.red_data)
-
-
 
     def reduce_instances(self, return_time = False):
+        """Main function in class reducing instances woth MSS algoritm.
+
+        Args:
+            return_time (bool, optional): if True retuns processing time in seconds. Defaults to False.
+
+        Returns:
+            float: processing time in seconds
+        """
         print('Reducing the dataset using the MSS algorithm...')
         start = process_time()
-        ################
+        
         self.red_data = []
         self.red_lab = []
-        #normalization for create distance array
+        #normalization for creation distance array
         self.train =  self.data.normalize(self.data.data_all_train)[0]
         
         #create 2d array for dataset with distances between pairs 
@@ -86,7 +111,7 @@ class MSS(_Reduction):
             sort = np.argsort(dist_arr[i])
             #create sorted array with indexes of neighbours with same label and enemies - with different label
             neigh, enemy = self.group_neigh_enemies(self.data.data_label_train, i, sort)
-            #add index of nearest enemy to aray 
+            #add index of nearest enemy to array 
             nearest_enemy.append(enemy[0])
             nearest_enemy_dist.append(dist_arr[i][enemy[0]])
 
@@ -107,7 +132,6 @@ class MSS(_Reduction):
                 added.append(i)
 
         super().prepare_reduced(self)
-        ################
         end = process_time()
 
         if return_time:

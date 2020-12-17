@@ -1,9 +1,8 @@
-
 from InstanceReduction.DataPreparation import DataPreparation
 from InstanceReduction.Reduction.DROP1 import DROP1
 from InstanceReduction.Reduction.ENN import ENN
 from InstanceReduction.Reduction.MSS import MSS
-from InstanceReduction.Reduction.PCS import PCS
+from InstanceReduction.Reduction.PSC import PSC
 from InstanceReduction.Reduction.ICF import ICF
 import pytest
 """
@@ -24,7 +23,7 @@ wrong_name_types = [False, True, 0, 12, dict(), set(), tuple(), []]
 wrong_sep_types = [False, True, 0, 12, dict(), set(), tuple(), []]
 
 #parapetres for Reduction classes
-basic_reduction = [ENN, DROP1, MSS, PCS, ICF]
+basic_reduction = [ENN, DROP1, MSS, PSC, ICF]
 # k_param_ok = [1, 2, 3, 10, maxk]
 k_praram_wrong = [0, -1, 0.34, 'wrong', False]
 to_large_k = [105, 7695]#, 14000]

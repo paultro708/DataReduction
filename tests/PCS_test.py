@@ -1,5 +1,5 @@
 import pytest
-from InstanceReduction.Reduction.PCS import PCS
+from InstanceReduction.Reduction.PSC import PSC
 from InstanceReduction.DataPreparation import DataPreparation
 from tests.const import len_all, tuples, names
 import numpy as np
@@ -14,14 +14,14 @@ import numpy as np
 @pytest.fixture
 def tmp_pcs(request):
     d = DataPreparation('iris')
-    return PCS(d)
+    return PSC(d)
 
 @pytest.mark.parametrize('n_clust', [1, 2, 4, 5])
 @pytest.mark.parametrize('dat, len_d', tuples(names, len_all))
 def test_create_clusters(dat, len_d, n_clust):
     d = DataPreparation(dat)
-    pcs = PCS(d)
-    clust = pcs.create_clusters(d.data_all, n_clust)
+    pcs = PSC(d)
+    clust = pcs._create_clusters(d.data_all, n_clust)
     # poss_clus = range(0,n_clust)
     assert len(clust) == len_d
     for i in clust: assert (i in range(0,n_clust)) == True 
@@ -30,9 +30,9 @@ def test_create_clusters(dat, len_d, n_clust):
 @pytest.mark.parametrize('dat, len_d', tuples(names, len_all))
 def test_create_clusters_wrong_ncl(dat, len_d, n_clust):
     d = DataPreparation(dat)
-    pcs = PCS(d)
+    pcs = PSC(d)
     with pytest.raises(Exception):
-        clust = pcs.create_clusters(d.data_all, n_clust)
+        clust = pcs._create_clusters(d.data_all, n_clust)
 
 @pytest.mark.parametrize('dat', [-1, [], None, 0.56, True, 'cv'])
 def test_create_clusters_wrong_dat(dat, tmp_pcs):

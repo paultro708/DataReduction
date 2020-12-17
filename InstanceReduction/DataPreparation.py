@@ -6,7 +6,7 @@ import os
 from pandas.api.types import is_numeric_dtype
 
 class NotLoadedException(Exception):
-    """Class representing exception when trying to prepare the dataset when the dataset has not yet been loaded
+    """Class representing exception raising after trying to prepare the dataset when the dataset has not yet been loaded
 
     Args:
         Exception: exception python class
@@ -19,16 +19,8 @@ class NotLoadedException(Exception):
         """
         self.message = message
 
-# def create_path_csv(folder, name):
-#         """
-#         Function creating string with path of dataset in csv format
-#         :folder: folder name
-#         :name: name of dataset
-#         """
-#         return folder + '\\' + name + '.csv'
-
 #path of dir with datasets in csv format
-datasets_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "datasets_csv") # "datasets_csv"
+datasets_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "datasets_csv")
 extension ='.csv'
 
 dataset_path = {"iris": os.path.join(datasets_dir, 'iris'+extension),
@@ -40,7 +32,9 @@ dataset_path = {"iris": os.path.join(datasets_dir, 'iris'+extension),
                 "segment": os.path.join(datasets_dir, 'segment'+ extension),
                 "satimage": os.path.join(datasets_dir, 'satimage'+ extension),
                 "shuttle": os.path.join(datasets_dir, 'shuttle_training'+ extension),
-                "yeast": os.path.join(datasets_dir, 'yeast'+ extension)
+                "yeast": os.path.join(datasets_dir, 'yeast'+ extension),
+                "volcanoes": os.path.join(datasets_dir, 'volcanoes'+ extension),
+                "avila": os.path.join(datasets_dir, 'avila'+ extension)
                 }
 
 class DataPreparation:
@@ -50,7 +44,7 @@ class DataPreparation:
     Attributes:
         class_col: column marked as representing as column with labels for decission class. Can be str name of column or integer index.
         dataset: dataset loaded as pandas data frame. It must have only numerical, non missed values.
-        data_all: numpy array with normalized data without labels
+        data_all: numpy array with data without labels
         data_label: numpy arrray with labels for data
         features: list with feature names - header without :class_col
         n_features: count of features
@@ -64,7 +58,7 @@ class DataPreparation:
     """
     @staticmethod
     def normalize(array: np.ndarray):
-        """Function normalizes numpy array.
+        """Function normalizing numpy array.
 
         Args:
             array (np.ndarray): array to normalize
@@ -83,10 +77,14 @@ class DataPreparation:
 
     @staticmethod
     def reverse_normalize(array: np.ndarray, weights: np.ndarray):
-        """Function reverse normalizes numpy array - back to values before normalization
+        """Function reverse normalizing numpy array - back to values before normalization
 
         Raises:
             Exception: when number of weights and columns does not agree
+
+        Args:
+            array (np.ndarray): array to reverse normalizing
+            weights (np.ndarray): wights used for normalizing
 
         Returns:
             (np.ndarray): array with values before normalization
@@ -102,9 +100,6 @@ class DataPreparation:
         """
         Function preparing dataset for reduction - getting out metadata and split dataset to train and test subsets.
         """
-        # #normalize data
-        # self.data_all = normalize(self.data_all)
-
         #map labels to 0-n indexes
         self.class_dict = dict()
         i=0

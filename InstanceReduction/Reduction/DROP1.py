@@ -8,10 +8,24 @@ from sklearn.preprocessing import Normalizer
 
 class DROP1(_Reduction):
     """
-    Class representing DROP1 algorithm. TODO docstrings
+    Class applying Decremental Reduction Optimization Procedure in first version (DROP1) algorithm. It removes instances that does not have impact for prediction.
+    
+    Args:
+        _Reduction: abstract class of reduction algorithm
+
     """
 
     def __init__(self, data: DataPreparation, k: int=3):
+        """Initialize DROP1 method.
+
+        Args:
+            data (DataPreparation): instance of prepared dataset
+            k (int, optional): count of nearest neighbours. Defaults to 3.
+
+        Raises:
+            TypeError: if type of parameter is not apriopriate
+            ValueError: if value of :k: is less than 1 or grater than number of instances in dataset 
+        """
         if not isinstance(data, DataPreparation):
             raise TypeError('Atribute \'data\' must be DataPreparation instance')
         self.data = data
@@ -27,8 +41,16 @@ class DROP1(_Reduction):
 
     @staticmethod
     def find_data_and_labels(tab, dataset, labelset):
-        """
-        Function finding data and labels for indexes in tab
+        """Function finding data and labels for indexes in tab
+
+        Args:
+            tab: array of indexes
+            dataset: array with dataset
+            labelset: array with labels
+
+        Returns:
+            list: list of data for instances with indexes in :tab:
+            list: list of labels for instances with indexes in :tab:
         """
         #data of instances
         data_ins = []
@@ -42,9 +64,16 @@ class DROP1(_Reduction):
         return data_ins, label_ins
 
 
-    def __n_classified_correct(self, index, k, without = None):
-        """
-        Function counting correctly classified instances
+    def __n_classified_correct(self, index:int, k:int, without = None):
+        """Function counting correctly classified assotiates of instance :index: using :k: nearest neighbours
+
+        Args:
+            index (int): index of classifing instance 
+            k (int): count of neighbours
+            without (int, optional): index of instance does not taking into account in prediction. Defaults to None.
+
+        Returns:
+            int: count of correctly classified assotiates
         """
         #data of instances in ANN 
         #excepted labels of instances
@@ -63,9 +92,15 @@ class DROP1(_Reduction):
 
 
     def reduce_instances(self, return_time = False):
+        """Main function in class reducing instances woth DROP1 algoritm.
+
+        Args:
+            return_time (bool, optional): if True retuns processing time in seconds. Defaults to False.
+
+        Returns:
+            float: processing time in seconds
+        """
         print('Reducing the dataset using the DROP1 algorithm...')
-        # weights = np.sqrt(sum(self.data.data_all_train**2))
-        
         #start time measurement
         start = process_time()
         
@@ -77,7 +112,7 @@ class DROP1(_Reduction):
         self.red_lab = self.data.data_label_train
 
 
-        for i, d in np.ndenumerate(self.red_data): #enumerate(self.red_data[:]):
+        for i, d in np.ndenumerate(self.red_data):
             n_with = self.__n_classified_correct(i[0], self.k) 
             n_without = self.__n_classified_correct(i[0], self.k+1, i) 
 
@@ -95,7 +130,7 @@ class DROP1(_Reduction):
 
         
         self.red_data = self.data.reverse_normalize(self.red_data, self.weights)
-        # super().prepare_reduced(self)
+        
         #end time measurement
         end = process_time()
 

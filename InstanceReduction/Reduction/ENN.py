@@ -9,6 +9,9 @@ from time import process_time
 class ENN(_Reduction):
     """
     Class representing ENN algorithm. It reduces especially noise instances. 
+    
+    Args:
+        _Reduction: abstract class of reduction algorithm
 
     Attributes:
         data (DataPreparation): instance of :DataPreparation class containing prepared dataset for ENN alhorithm application
@@ -68,10 +71,10 @@ class ENN(_Reduction):
         """Main function in class that uses algorithm ENN on training dataset and create arrays with selected instances and labels 
 
         Args:
-            return_time (bool, optional): . Defaults to False.
+            return_time (bool, optional): if True retuns processing time in seconds. Defaults to False.
 
         Returns:
-            end - start (float): algorithm execution time in seconds 
+            float: processing time in seconds
         """
         print('Reducing the dataset using the ENN algorithm...')
         #start time measurement
