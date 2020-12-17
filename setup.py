@@ -9,7 +9,7 @@ AUTHOR = 'Paulina Trofimiak'
 AUTHOR_EMAIL = 'PaulinaTrofimiak@gmail.com'
 URL = 'https://github.com/paultro708/DataReduction'
 
-LICENSE = 'MIT License'
+LICENSE = 'MIT'
 DESCRIPTION = 'Package for data reduction, especially using instance selection algorithms.'
 LONG_DESCRIPTION = (HERE / "README.md").read_text()
 LONG_DESC_TYPE = "text/markdown"
@@ -33,5 +33,6 @@ setup(name=PACKAGE_NAME,
       author_email=AUTHOR_EMAIL,
       url=URL,
       install_requires=INSTALL_REQUIRES,
-      packages=find_packages()
+      packages=find_packages(),
+      python_requires='>=3.6, <3.8'
       )
