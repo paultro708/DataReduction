@@ -2,7 +2,7 @@ htmlcov/
 plots/
 dist/
 build/
-data_reduction.egg-info/
+datareduction.egg-info/
 .*
 **/__pycache__/
 results/

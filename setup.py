@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 HERE = pathlib.Path(__file__).parent
 
 VERSION = '0.1.0'
-PACKAGE_NAME = 'datareduction'
+PACKAGE_NAME = 'data_reduction'
 AUTHOR = 'Paulina Trofimiak'
 AUTHOR_EMAIL = 'PaulinaTrofimiak@gmail.com'
 URL = 'https://github.com/paultro708/DataReduction'
