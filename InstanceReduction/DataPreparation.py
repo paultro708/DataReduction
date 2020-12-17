@@ -31,9 +31,10 @@ dataset_path = {"iris": os.path.join(datasets_dir, 'iris'+extension),
                 "spambase": os.path.join(datasets_dir, 'spambase'+ extension),
                 "segment": os.path.join(datasets_dir, 'segment'+ extension),
                 "satimage": os.path.join(datasets_dir, 'satimage'+ extension),
-                "shuttle": os.path.join(datasets_dir, 'shuttle_training'+ extension),
+                "shuttle_train": os.path.join(datasets_dir, 'shuttle_training'+ extension),
                 "yeast": os.path.join(datasets_dir, 'yeast'+ extension),
-                "volcanoes": os.path.join(datasets_dir, 'volcanoes'+ extension),
+                "electricity": os.path.join(datasets_dir, 'electricity'+ extension),
+                "fried": os.path.join(datasets_dir, 'fried'+ extension),
                 "avila": os.path.join(datasets_dir, 'avila'+ extension)
                 }
 
