@@ -5,10 +5,17 @@ The module is implemented as part of an engineering project.
 
 # Instalation
 ```
-    pip install data_reduction
+    pip install InstanceReduction
 ```
 
 # Usage
+## Import modules
+```
+    from InstanceReduction.Raport import Raport
+    from InstanceReduction.DataPreparation import DataPreparation
+    from InstanceReduction.Reduction.DROP1 import DROP1
+
+```
 ## Data loading and preparation
 The first step is to load and prepare data using DataPreparation:
 ```
@@ -68,4 +75,3 @@ Predicting time:  0.0024793999999999095
 
 Reduction factor: 80.00 %
 ```
-

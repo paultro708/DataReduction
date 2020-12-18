@@ -1,0 +1,3 @@
+include datasets/*
+include InstanceReduction/datasets_csv/*
+recursive-include datasets_csv *.csv

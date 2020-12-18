@@ -185,19 +185,23 @@ class DataPreparation:
 
         Args:
             name (str, optional): name of dataset, one of available:
-                            "iris", 
-                            "glass", 
-                            "letter", 
-                            "liver", 
-                            "pendigits", 
-                            "spambase", 
-                            "segment",
-                            "satimage" or
-                            "yeast".
-                    Default to None. If not given - :filepath should be.
+                            "iris" - see more on: https://www.openml.org/d/61
+                            "glass" - see more on: https://www.openml.org/d/41
+                            "letter" - see more on: https://www.openml.org/d/6
+                            "liver" - see more on: https://www.openml.org/d/8
+                            "pendigits" - see more on: https://www.openml.org/d/32
+                            "spambase" - see more on: https://www.openml.org/d/44
+                            "segment" - see more on: https://www.openml.org/d/40984
+                            "satimage" - see more on: https://www.openml.org/d/182
+                            "shuttle_train" - see more on: https://archive.ics.uci.edu/ml/datasets/Statlog+(Shuttle)
+                            "yeast" - see more on: https://www.openml.org/d/181
+                            "electricity" - see more on: https://www.openml.org/d/40985
+                            "fried" - see more on: https://www.openml.org/d/901
+                            "avila" - see more on: https://archive.ics.uci.edu/ml/datasets/Avila
+                    Default to None. If not given - :filepath: should be.
             filepath (optional): path of file containing selected dataset. Even if given, when :name also is, named dataset will be loaded. Default to None.
             class_col (oprional): name of column with labels marking decision class. Default to 'class'
-            sep (optional): separator used in dataset file for separating values
+            sep (optional): separator used in dataset file for values separation
 
         Raises:
             TypeError: when type of the given parameter is not apriopriate

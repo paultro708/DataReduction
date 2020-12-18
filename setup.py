@@ -3,8 +3,8 @@ from setuptools import setup, find_packages
 
 HERE = pathlib.Path(__file__).parent
 
-VERSION = '0.1.0'
-PACKAGE_NAME = 'data_reduction'
+VERSION = '0.0.2'
+PACKAGE_NAME = 'InstanceReduction'
 AUTHOR = 'Paulina Trofimiak'
 AUTHOR_EMAIL = 'PaulinaTrofimiak@gmail.com'
 URL = 'https://github.com/paultro708/DataReduction'
@@ -34,5 +34,6 @@ setup(name=PACKAGE_NAME,
       url=URL,
       install_requires=INSTALL_REQUIRES,
       packages=find_packages(),
+      include_package_data=True,
       python_requires='>=3.6, <3.8'
       )
